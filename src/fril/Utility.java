@@ -42,7 +42,8 @@ public class Utility {
     public static String gCookieID;
     private static String authenticity_token_static;
     private static String cookie_static;
-
+    public static int g_refreshPeriod = 60000; //60 second to refresh the item list
+    
     static TrustManager[] trustAllCerts = new TrustManager[]{
         new X509TrustManager() {
 

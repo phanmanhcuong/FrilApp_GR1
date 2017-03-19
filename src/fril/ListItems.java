@@ -13,8 +13,11 @@ import java.net.MalformedURLException;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,6 +25,9 @@ import javax.swing.table.DefaultTableModel;
  * @author CuongPhan
  */
 public class ListItems extends javax.swing.JFrame {
+    private boolean bFirstTimeCmbLoad = false;
+    //List<UserAccount> lstUserAccount = new List<UserAccount>();
+    Timer myTimer = null;
     private static int daysRemain = 0;
     /**
      * Creates new form ListItems
@@ -228,6 +234,10 @@ public class ListItems extends javax.swing.JFrame {
     public void ListItems() throws SocketException{
         
         boolean bAccessible = GetGrant2Access(daysRemain);
+        //FrmLicenseRequest frmLicenseRequest = new FrmLicenseRequest(bAccessible, daysRemain);
+        //frmLicenseRequest.ShowDialog();
+        
+        myTimer.setDelay(Utility.g_refreshPeriod);
     }
     public void refreshTradingListView() throws IOException{
         String shippingDate="", shippingAddress="";
@@ -339,8 +349,17 @@ public class ListItems extends javax.swing.JFrame {
     }
 
     private boolean GetGrant2Access(int daysRemain) throws SocketException {
-    //get Mac address of the computer running software
+    //get Mac address of the computer running software        
         String macAddress = Utility.GetMACAddress2();
         String connectionString = Settings.licenseConnectionString;
+    }
+    
+    void myTimerTick(){
+        try {
+            refreshListView();
+        } catch (IOException ex) {
+            Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
     }
 }
