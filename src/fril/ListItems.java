@@ -5,6 +5,9 @@
  */
 package fril;
 
+import java.awt.Button;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,8 +20,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
+import javax.swing.ImageIcon;
+import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.TableView;
 
 /**
  *
@@ -237,7 +243,26 @@ public class ListItems extends javax.swing.JFrame {
         //FrmLicenseRequest frmLicenseRequest = new FrmLicenseRequest(bAccessible, daysRemain);
         //frmLicenseRequest.ShowDialog();
         
-        myTimer.setDelay(Utility.g_refreshPeriod);
+        //myTimer.setDelay(Utility.g_refreshPeriod);
+        ActionListener refreshListView = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                myTimerTick();
+            }
+        };
+        myTimer = new Timer(Utility.g_refreshPeriod, refreshListView);
+        myTimer.start();
+        
+        //addUserAccount2Combobox();
+        
+        //exhibition tab
+        DefaultTableModel defaultTableModelExhibition = (DefaultTableModel)jTable_exhibition.getModel();
+        ImageIcon btn_modify = new ImageIcon("edit-icon.jpg");
+        defaultTableModelExhibition.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Prize", btn_modify});
+        
+        DefaultTableModel defaultTableModelTrading = (DefaultTableModel)jTable_trading.getModel();
+        Button btn_delete = new Button("Delete Item");
+        defaultTableModelTrading.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Status", "Product DeadLine", "Shipping Address", btn_delete});
     }
     public void refreshTradingListView() throws IOException{
         String shippingDate="", shippingAddress="";
