@@ -275,4 +275,12 @@ public class Utility {
         }
         return sMacAddress;
     }
+
+    static void deleteItem(String selectedValue) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    static EditInfo getEditInfo(String selectedValue) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
