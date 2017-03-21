@@ -8,6 +8,8 @@ package fril;
 import java.awt.Button;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,9 +23,12 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.Timer;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.text.TableView;
 
 /**
@@ -31,10 +36,12 @@ import javax.swing.text.TableView;
  * @author CuongPhan
  */
 public class ListItems extends javax.swing.JFrame {
+
     private boolean bFirstTimeCmbLoad = false;
     //List<UserAccount> lstUserAccount = new List<UserAccount>();
     Timer myTimer = null;
     private static int daysRemain = 0;
+
     /**
      * Creates new form ListItems
      */
@@ -219,7 +226,6 @@ public class ListItems extends javax.swing.JFrame {
 //        });
 //    }
 
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane SP_exhibition;
     private javax.swing.JScrollPane SP_sold;
@@ -236,13 +242,13 @@ public class ListItems extends javax.swing.JFrame {
     private javax.swing.JTable jTable_sold;
     private javax.swing.JTable jTable_trading;
     // End of variables declaration//GEN-END:variables
-    
-    public void ListItems() throws SocketException{
-        
+
+    public void ListItems() throws SocketException {
+
         boolean bAccessible = GetGrant2Access(daysRemain);
         //FrmLicenseRequest frmLicenseRequest = new FrmLicenseRequest(bAccessible, daysRemain);
         //frmLicenseRequest.ShowDialog();
-        
+
         //myTimer.setDelay(Utility.g_refreshPeriod);
         ActionListener refreshListView = new ActionListener() {
             @Override
@@ -252,102 +258,146 @@ public class ListItems extends javax.swing.JFrame {
         };
         myTimer = new Timer(Utility.g_refreshPeriod, refreshListView);
         myTimer.start();
-        
+
         //addUserAccount2Combobox();
-        
         //exhibition tab
-        DefaultTableModel defaultTableModelExhibition = (DefaultTableModel)jTable_exhibition.getModel();
+        //DefaultTableModel defaultTableModelExhibition = (DefaultTableModel)jTable_exhibition.getModel();
+        //defaultTableModelExhibition.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Prize", btn_modify});
         ImageIcon btn_modify = new ImageIcon("edit-icon.jpg");
-        defaultTableModelExhibition.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Prize", btn_modify});
-        
-        DefaultTableModel defaultTableModelTrading = (DefaultTableModel)jTable_trading.getModel();
+        DefaultTableModel defaultTableModelExhibition
+                = new DefaultTableModel(new Object[]{" ", "Product ID", "Product Name", "Product Price", btn_modify}, 0);
+        jTable_exhibition.setModel(defaultTableModelExhibition);
+        jTable_exhibition.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedColumn = jTable_exhibition.getSelectedColumn();
+                int selectedRow = jTable_exhibition.getSelectedRow();
+                if (selectedColumn == 0) { //image click
+                    String selectedValue;
+                    selectedValue = jTable_exhibition.getValueAt(selectedRow, 1).toString();
+                    //CommentManagement frmComment = new CommentManagement(selectedValue);
+                    //frmComment.show();
+                } else if (jTable_exhibition.getSelectedColumn() == 4) { //modify item
+                    String selectedValue;
+                    selectedValue = jTable_exhibition.getValueAt(selectedRow, 1).toString();
+                    EditInfo editedInfo = Utility.getEditInfo(selectedValue);
+                    editedInfo.strHref = "" + selectedValue;
+                    AddNewItem frmAddNewItem = new AddNewItem();
+                    frmAddNewItem.SetFormListItems(this);
+                    frmAddNewItem.SetEditedProductInfo(editedInfo);
+                    frmAddNewItem.ShowDialog();
+                } else if (jTable_exhibition.getSelectedColumn() == 5) { //delte item
+                    int dialogResult = JOptionPane.showConfirmDialog(null, "Delete ?", "Confirm delete item", JOptionPane.YES_NO_OPTION);
+                    if (dialogResult == JOptionPane.YES_OPTION) {
+                        String selectedValue;
+                        selectedValue = jTable_exhibition.getValueAt(selectedRow, 1).toString();
+                        Utility.deleteItem(selectedValue);
+                        try {
+                            refreshListView();
+                        } catch (IOException ex) {
+                            Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                }
+            }
+
+        });
+
+        //DefaultTableModel defaultTableModelTrading = (DefaultTableModel)jTable_trading.getModel();
+        //defaultTableModelTrading.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Status", "Product DeadLine", "Shipping Address", btn_delete});
         Button btn_delete = new Button("Delete Item");
-        defaultTableModelTrading.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Status", "Product DeadLine", "Shipping Address", btn_delete});
+        DefaultTableModel defaultTableModelTrading = new DefaultTableModel(new Object[]{" ", "Product ID", "Product Name", "Product Status", "Product DeadLine", "Shipping Address", btn_delete}, 0);
+        jTable_trading.setModel(defaultTableModelTrading);
+        //JTable table = new JTable();
+        //table.addColumn(aColumn);
+        //TableColumn tableColumn = new TableColumn();
+        //tableColumn.set
+
     }
-    public void refreshTradingListView() throws IOException{
-        String shippingDate="", shippingAddress="";
-        DefaultTableModel defaultTableModel = (DefaultTableModel)jTable_trading.getModel();
-        if(null!=defaultTableModel){
+
+    public void refreshTradingListView() throws IOException {
+        String shippingDate = "", shippingAddress = "";
+        DefaultTableModel defaultTableModel = (DefaultTableModel) jTable_trading.getModel();
+        if (null != defaultTableModel) {
             defaultTableModel.setRowCount(0);
         }
         List<ItemShortInfo> itemList = Utility.getProducts("https://fril.jp/ajax/item/trading");
-        for(int i=0; i<itemList.size(); i++){
-           
+        for (int i = 0; i < itemList.size(); i++) {
+
             URL url = new URL(itemList.get(i).strImageLink);
-            HttpsURLConnection req = (HttpsURLConnection)url.openConnection();
+            HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
             req.setRequestMethod("GET");
-            
+
             //get image
             BufferedImage bufferedImage = null;
             try {
                 bufferedImage = ImageIO.read(req.getInputStream());
-                
+
             } catch (IOException e) {
-                
+
             }
             //get shipping date information
             String tradingFullPage = getTradingFullPage(itemList.get(i).strHref);
-            
+
             int startIndex = tradingFullPage.indexOf("<div class=\"card\">");
-            if(startIndex > 0){
+            if (startIndex > 0) {
                 String cardSection = tradingFullPage.substring(startIndex);
                 String shippingDeadLineText = Utility.extractAttribute(cardSection, 0, "<div class=\"col s5\">", "</div>");
                 shippingDeadLineText = shippingDeadLineText.trim();
                 shippingDate = Utility.extractAttribute(cardSection, 0, "<span class=\"large-text\">", "</br></span>");
             }
-            
+
             int startIndex2 = tradingFullPage.indexOf("<!-- _address_info -->");
-            if(startIndex2 > 0){
+            if (startIndex2 > 0) {
                 String addressInfoSection = tradingFullPage.substring(startIndex2);
                 String partern = "<div class=\"col s12\">";
                 int startIndex3 = addressInfoSection.indexOf(partern);
-                if(startIndex3 > 0){
+                if (startIndex3 > 0) {
                     shippingAddress = Utility.extractAttribute(addressInfoSection.substring(startIndex3),
-                            partern.length()+1, partern, "</div>");
+                            partern.length() + 1, partern, "</div>");
                     shippingAddress = shippingAddress.replace("<p>", "");
                     shippingAddress = shippingAddress.replace("<\\p>", "");
                     shippingAddress = shippingAddress.replace("<br />", "\n");
                 }
             }
-            
-            if(null!=bufferedImage){
+
+            if (null != bufferedImage) {
                 defaultTableModel.addRow(new Object[]{bufferedImage, itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, shippingDate, shippingAddress});
-            }
-            else{
+            } else {
                 defaultTableModel.addRow(new Object[]{itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, shippingDate, shippingAddress});
             }
-           
+
         }
     }
-    
-    public void refreshListView() throws IOException{
-        DefaultTableModel defaultTableModel = (DefaultTableModel)jTable_exhibition.getModel();
-        if(null!=defaultTableModel){
+
+    public void refreshListView() throws IOException {
+        DefaultTableModel defaultTableModel = (DefaultTableModel) jTable_exhibition.getModel();
+        if (null != defaultTableModel) {
             defaultTableModel.setRowCount(0);
         }
         List<ItemShortInfo> itemList = Utility.getProducts("https://fril.jp/ajax/item/selling");
-        for(int i=0; i<itemList.size(); i++){
-           
+        for (int i = 0; i < itemList.size(); i++) {
+
             URL url = new URL(itemList.get(i).strImageLink);
-            HttpsURLConnection req = (HttpsURLConnection)url.openConnection();
+            HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
             req.setRequestMethod("GET");
-            
+
             //get image
             BufferedImage bufferedImage = null;
             try {
                 bufferedImage = ImageIO.read(req.getInputStream());
-                
+
             } catch (IOException e) {
-                
+
             }
             //add row
-            if(null!=bufferedImage){
+            if (null != bufferedImage) {
                 defaultTableModel.addRow(new Object[]{bufferedImage, itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting});
-            }
-            else{
+            } else {
                 defaultTableModel.addRow(new Object[]{itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting});
             }
-           
+
         }
     }
 
@@ -355,36 +405,36 @@ public class ListItems extends javax.swing.JFrame {
         String[] strTmp = strLink.split("/");
         String strLink2 = "https://fril.jp/" + strTmp[strTmp.length - 1];
         String fullPage = "";
-        
+
         URL url = new URL(strLink2);
-        HttpsURLConnection req = (HttpsURLConnection)url.openConnection();
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         req.setRequestProperty("Cookie", Utility.gCookieID);
         req.setRequestProperty("Referer", "https://fril.jp/sell");
-        
+
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         String inputLine;
         StringBuilder stringBuilder = new StringBuilder();
         while ((inputLine = bufferedReader.readLine()) != null) {
             stringBuilder.append(inputLine);
-        } 
+        }
         fullPage = stringBuilder.toString();
         return fullPage;
     }
 
     private boolean GetGrant2Access(int daysRemain) throws SocketException {
-    //get Mac address of the computer running software        
+        //get Mac address of the computer running software        
         String macAddress = Utility.GetMACAddress2();
         String connectionString = Settings.licenseConnectionString;
     }
-    
-    void myTimerTick(){
+
+    void myTimerTick() {
         try {
             refreshListView();
         } catch (IOException ex) {
             Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
+
     }
 }
