@@ -189,6 +189,9 @@ public class ListItems extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        AddNewItem frmAddNewItem = new AddNewItem();
+        frmAddNewItem.SetFormListItems(this);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -245,7 +248,7 @@ public class ListItems extends javax.swing.JFrame {
 
     public void ListItems() throws SocketException {
 
-        boolean bAccessible = GetGrant2Access(daysRemain);
+        //boolean bAccessible = GetGrant2Access(daysRemain);
         //FrmLicenseRequest frmLicenseRequest = new FrmLicenseRequest(bAccessible, daysRemain);
         //frmLicenseRequest.ShowDialog();
 
@@ -262,7 +265,7 @@ public class ListItems extends javax.swing.JFrame {
         //addUserAccount2Combobox();
         //exhibition tab
         //DefaultTableModel defaultTableModelExhibition = (DefaultTableModel)jTable_exhibition.getModel();
-        //defaultTableModelExhibition.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Prize", btn_modify});
+        //defaultTableModelExhibition.addRow(new Object[]{" ", "Product ID", "Product Name", "Product Price", btn_modify});
         ImageIcon btn_modify = new ImageIcon("edit-icon.jpg");
         DefaultTableModel defaultTableModelExhibition
                 = new DefaultTableModel(new Object[]{" ", "Product ID", "Product Name", "Product Price", btn_modify}, 0);
@@ -283,10 +286,10 @@ public class ListItems extends javax.swing.JFrame {
                     EditInfo editedInfo = Utility.getEditInfo(selectedValue);
                     editedInfo.strHref = "" + selectedValue;
                     AddNewItem frmAddNewItem = new AddNewItem();
-                    frmAddNewItem.SetFormListItems(this);
+                    frmAddNewItem.SetFormListItems(ListItems.this);
                     frmAddNewItem.SetEditedProductInfo(editedInfo);
                     frmAddNewItem.ShowDialog();
-                } else if (jTable_exhibition.getSelectedColumn() == 5) { //delte item
+                } else if (jTable_exhibition.getSelectedColumn() == 5) { //delete item
                     int dialogResult = JOptionPane.showConfirmDialog(null, "Delete ?", "Confirm delete item", JOptionPane.YES_NO_OPTION);
                     if (dialogResult == JOptionPane.YES_OPTION) {
                         String selectedValue;
@@ -423,11 +426,12 @@ public class ListItems extends javax.swing.JFrame {
         return fullPage;
     }
 
-    private boolean GetGrant2Access(int daysRemain) throws SocketException {
-        //get Mac address of the computer running software        
-        String macAddress = Utility.GetMACAddress2();
-        String connectionString = Settings.licenseConnectionString;
-    }
+//    private boolean GetGrant2Access(int daysRemain) throws SocketException {
+//        //get Mac address of the computer running software        
+//        String macAddress = Utility.GetMACAddress2();
+//        String connectionString = Settings.licenseConnectionString;
+//        return macAddress;
+//    }
 
     void myTimerTick() {
         try {

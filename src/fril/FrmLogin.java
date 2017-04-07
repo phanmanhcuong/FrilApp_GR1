@@ -33,8 +33,7 @@ public class FrmLogin extends javax.swing.JPanel {
 
     private String authenticityToken = "";
     private String gCookie = "";
-    //CookieManager cookieManager = new CookieManager();
-    //CookieHandler.setDefault(cookieManager);
+
     private CookieStore cookieStore = new CookieManager().getCookieStore();
     private CookieStore gCookieStore = new CookieManager().getCookieStore();
 
@@ -42,12 +41,10 @@ public class FrmLogin extends javax.swing.JPanel {
      * Creates new form FrmLogin
      * @throws java.io.IOException
      */
-    public FrmLogin() throws IOException {
-        //gCookieStore = cookieStore;   
+    public FrmLogin() throws IOException {  
         GetFrilHomePage();
         initComponents();
         loadAccount();
-        //GetFrilHomePage();
         
     }
 
@@ -166,7 +163,7 @@ public class FrmLogin extends javax.swing.JPanel {
         password = new String(PasswordField.getPassword());
 
         try {
-            Utility.logIn(username, password);
+            Utility.logIn(FrmLogin.this, username, password);
         } catch (IOException ex) {
             Logger.getLogger(FrmLogin.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -13,7 +13,7 @@ import java.awt.event.MouseAdapter;
  */
 class AddNewItem {
 
-    void SetFormListItems(MouseAdapter aThis) {
+    void SetFormListItems(ListItems listItems) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

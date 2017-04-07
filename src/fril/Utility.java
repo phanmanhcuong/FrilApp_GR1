@@ -16,6 +16,7 @@ import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
+import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -30,7 +31,10 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -129,7 +133,7 @@ public class Utility {
         return httpCookie.toString();
     }
 
-    public static void logIn(String username, String password) throws MalformedURLException, IOException {
+    public static void logIn(FrmLogin frmLogin, String username, String password) throws MalformedURLException, IOException {
         String formUrl = "https://fril.jp/users/sign_in";
         getCookieAndAuthenticitytoken("https://fril.jp/");
         String formParams = "utf8=" + URLEncoder.encode("✓", "UTF-8") + "&authenticity_token=" + URLEncoder.encode(authenticity_token_static, "UTF-8") + "&user" + URLEncoder.encode("[", "UTF-8") + "email" + URLEncoder.encode("]", "UTF-8") + "=" + username + "&user" + URLEncoder.encode("[", "UTF-8") + "password" + URLEncoder.encode("]", "UTF-8") + "=" + password + "&commit=" + URLEncoder.encode("ログイン", "UTF-8");
@@ -138,7 +142,6 @@ public class Utility {
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         req.setRequestProperty("Cookie", cookie_static);
         req.setInstanceFollowRedirects(false);
-        //HttpsURLConnection.setFollowRedirects(true);
         req.setRequestMethod("POST");
         req.setRequestProperty("Referer", "https://fril.jp/users/sign_in");
 
@@ -162,6 +165,7 @@ public class Utility {
                 cookieSplit = cookieList[0].split("="); //example: split asd=afsdf by =
                 if ("_fril_user_session".equals(cookieSplit[0])) {
                     cookie_static = cookieSplit[1];
+                    
                 }
             }
         }
@@ -172,9 +176,18 @@ public class Utility {
                 Settings.rememberme = true;
                 Settings.cookie = cookie_static;
             }
-            //System.out.println("successful");
+            gCookieID = cookie_static;
+            
+            JFrame topFrame = (JFrame) frmLogin.getRootPane().getParent();
+            topFrame.dispose();
+            
+            ListItems listItems = new ListItems();
+            listItems.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            listItems.pack();
+            listItems.setVisible(true);            
         }
         //gCookie = cookie; cookie to addaccount
+        getProducts("https://fril.jp/ajax/item/selling");
     }
 
     public static List<ItemShortInfo> getProducts(String formUrl) throws MalformedURLException, IOException {
@@ -183,8 +196,14 @@ public class Utility {
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
+        //req.setInstanceFollowRedirects(false);
+        req.setRequestProperty("Referer", "https://fril.jp/sell");
         req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
-
+        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+        req.setRequestProperty("If-None-Match", "W/\"7e116a5e57424d6a132b6a44fcf60b25\"");
+        if(req.getResponseCode() == 500){
+            System.out.println(req.getErrorStream().toString());
+        }
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         String inputLine;
         StringBuilder stringBuilder = new StringBuilder();
@@ -215,7 +234,7 @@ public class Utility {
         }
         return listItem;
     }
-
+    
     public static String extractAttribute(String strHtml, int idx, String strStart, String strStop) {
         String strHref;
         try {
