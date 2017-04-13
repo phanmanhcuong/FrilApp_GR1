@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.Timer;
@@ -288,7 +289,9 @@ public class ListItems extends javax.swing.JFrame {
                     AddNewItem frmAddNewItem = new AddNewItem();
                     frmAddNewItem.SetFormListItems(ListItems.this);
                     frmAddNewItem.SetEditedProductInfo(editedInfo);
-                    frmAddNewItem.ShowDialog();
+                    frmAddNewItem.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frmAddNewItem.pack();
+                    frmAddNewItem.setVisible(true);   
                 } else if (jTable_exhibition.getSelectedColumn() == 5) { //delete item
                     int dialogResult = JOptionPane.showConfirmDialog(null, "Delete ?", "Confirm delete item", JOptionPane.YES_NO_OPTION);
                     if (dialogResult == JOptionPane.YES_OPTION) {

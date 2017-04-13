@@ -15,4 +15,5 @@ public class Settings {
     public static String username;
     public static String password;
     public static String licenseConnectionString;
+    public static String userNameLst;
 }
