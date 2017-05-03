@@ -16,7 +16,6 @@ import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.net.NetworkInterface;
-import java.net.ProtocolException;
 import java.net.SocketException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -26,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -33,8 +33,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -46,6 +44,9 @@ public class Utility {
     public static String gCookieID;
     private static String authenticity_token_static;
     private static String cookie_static;
+    public static String cookieID; //used in getTokenToDeleteItem(), getTokenToUploadComment() 
+    public static String token; //used in getTokenToDeleteItem(), getTokenToUploadComment()
+    public static String comment_token; //used in getTokenToUploadComment()  
     public static int g_refreshPeriod = 60000; //60 second to refresh the item list
     
     static TrustManager[] trustAllCerts = new TrustManager[]{
@@ -87,7 +88,6 @@ public class Utility {
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        //req.setRequestProperty("Cookie", gCookieStore.getCookies().toString());
         req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
 
         //reads http response
@@ -112,7 +112,7 @@ public class Utility {
         return authenticityToken;
     }
 
-    private static void AddCookieStore(List<String> cookies) {
+     private static void AddCookieStore(List<String> cookies) {
         String[] cookieSplit;
         String cookieName;
         String cookieValue;
@@ -126,14 +126,77 @@ public class Utility {
             gCookieStore.add(null, httpCookie);
         }
     }
-
+     
+    public static void getTokenToDeleteItem(String formUrl) throws MalformedURLException, IOException{
+        cookieID = "";
+        token = "";
+        StringBuilder stringBuilder = new StringBuilder();
+        String inputLine;
+        String resp;
+        //http request
+        URL url = new URL(formUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestMethod("GET");
+        req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
+        
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        resp = stringBuilder.toString();
+        String cookie = req.getHeaderField("Set-Cookie");
+        String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
+        String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
+        cookieID = cookies[1]; //get cookie value
+        
+        int nIdxStart = resp.indexOf("csrf-token");
+        int nIdxEnd = resp.indexOf("/>", nIdxStart);
+        String strTmp = resp.substring(nIdxStart, nIdxEnd - nIdxStart - 1);
+        String[] tmp = strTmp.split("\\\"");
+        if(tmp.length >= 3){
+            token = tmp[2]; //get token
+        }
+    }
+   
+    public static void getTokenToUploadComment(String formUrl) throws MalformedURLException, IOException{
+        cookieID = "";
+        token = "";
+        comment_token = "";
+        
+        StringBuilder stringBuilder = new StringBuilder();
+        String inputLine;
+        String resp;
+        //http request
+        URL url = new URL(formUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestMethod("GET");
+        req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
+        
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        resp = stringBuilder.toString();
+        String cookie = req.getHeaderField("Set-Cookie");
+        String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
+        String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
+        cookieID = cookies[1]; //get cookie value
+        
+        token = extractAttribute(resp, 0, "\"authenticity_token\" value=\"", "\" />");
+        //get item_comment_authenticity_token
+        comment_token = extractAttribute(resp, 0, "id=\"item_comment_authenticity_token\" value=\"", "\" />");
+    }
+    
     public static String createCookie(String cookieID) {
         HttpCookie httpCookie = new HttpCookie("_fril_user_session", cookieID);
-        httpCookie.setDomain("fril.jp");
+        //httpCookie.setDomain("fril.jp");
         return httpCookie.toString();
     }
 
-    public static void logIn(FrmLogin frmLogin, String username, String password) throws MalformedURLException, IOException {
+    public static boolean logIn(String username, String password) throws MalformedURLException, IOException {
+        boolean bResult = false;
         String formUrl = "https://fril.jp/users/sign_in";
         getCookieAndAuthenticitytoken("https://fril.jp/");
         String formParams = "utf8=" + URLEncoder.encode("✓", "UTF-8") + "&authenticity_token=" + URLEncoder.encode(authenticity_token_static, "UTF-8") + "&user" + URLEncoder.encode("[", "UTF-8") + "email" + URLEncoder.encode("]", "UTF-8") + "=" + username + "&user" + URLEncoder.encode("[", "UTF-8") + "password" + URLEncoder.encode("]", "UTF-8") + "=" + password + "&commit=" + URLEncoder.encode("ログイン", "UTF-8");
@@ -141,6 +204,7 @@ public class Utility {
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         req.setRequestProperty("Cookie", cookie_static);
+        //req.setRequestProperty("Cookie", "_fril_user_session=aG01M09yU09iRGNYb2RFSmZZNnNRME5NTDdWb3Vib3oxSmJOdTlneFZqanplREplR0p6amFqaGxobFlIdU9udU9jdjRqME94dnhOY3lHcmE1Z0R1RUNBNGdsODQ1VEdyK2xhcEdnQ21uTkdlRzE2MFl4d1FheUFML3AyZ1gvSVBWUkcyOUd6eER3RjF5aUFKQktvT2owbGp1T2VDZ1VEdVVKV1kwckRVVnVza3RpbFc2QmJQeTR6NUZpT2JYZWZiVlZwZ2JmeStkUGdYRjZEQmdFS0dBblNveVhpWXcwdlhlNUZRd1hnTE11SlErZllRSGxFTkFrb2xzbkFiK2pLSlJkWkVCemJIdGp3ejlJdyt5ZDBlOGtYTzlIM2VnSEt2Vm05eFFsNDNDSVR4RU1UZWN1ZGx4ZE1hM1BINm1FR1NmTTA5eGFzU2JCZ0hOWE9RR2NHMXpIU2t4OXBUUGFFZEpkcjA4RCs0RnpzbkJIdkh6aEN2U1FWb0RiZFc0YVl0LS12Wks1UmNJdVRHblpsQXg2SWlKUzFBPT0%3D--e1957d2401b1df72d1e239c2eb07e200e8726e08");
         req.setInstanceFollowRedirects(false);
         req.setRequestMethod("POST");
         req.setRequestProperty("Referer", "https://fril.jp/users/sign_in");
@@ -164,8 +228,7 @@ public class Utility {
                 cookieList = listCookie.split(";"); //split cookie by ; (example: asd=afsdf;domain=...)
                 cookieSplit = cookieList[0].split("="); //example: split asd=afsdf by =
                 if ("_fril_user_session".equals(cookieSplit[0])) {
-                    cookie_static = cookieSplit[1];
-                    
+                    cookie_static = cookieSplit[1].replaceAll("\"", "");                
                 }
             }
         }
@@ -178,32 +241,48 @@ public class Utility {
             }
             gCookieID = cookie_static;
             
-            JFrame topFrame = (JFrame) frmLogin.getRootPane().getParent();
-            topFrame.dispose();
+//            JFrame topFrame = (JFrame) frmLogin.getRootPane().getParent();
+//            topFrame.dispose();
             
             ListItems listItems = new ListItems();
             listItems.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             listItems.pack();
-            listItems.setVisible(true);            
+            listItems.setVisible(true); 
+            
+            bResult = true;
         }
         //gCookie = cookie; cookie to addaccount
         getProducts("https://fril.jp/ajax/item/selling");
+        return bResult;
     }
-
+    
+//    public static String getCsrkToken(String formUrl) throws MalformedURLException, IOException{
+//        URL url = new URL(formUrl);
+//        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+//        req.setRequestMethod("GET");
+//        req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
+//        req.setRequestProperty("Cookie", gCookieID);
+//        
+//        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+//        String inputLine;
+//        StringBuilder stringBuilder = new StringBuilder();
+//        String resp;
+//        while ((inputLine = bufferedReader.readLine()) != null) {
+//            stringBuilder.append(inputLine);
+//        }
+//        resp = stringBuilder.toString();
+//        
+//    }
     public static List<ItemShortInfo> getProducts(String formUrl) throws MalformedURLException, IOException {
         List<ItemShortInfo> listItem = new ArrayList<>();
         URL url = new URL(formUrl);
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
-        //req.setInstanceFollowRedirects(false);
-        req.setRequestProperty("Referer", "https://fril.jp/sell");
-        req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
-        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
-        req.setRequestProperty("If-None-Match", "W/\"7e116a5e57424d6a132b6a44fcf60b25\"");
-        if(req.getResponseCode() == 500){
-            System.out.println(req.getErrorStream().toString());
-        }
+        req.setRequestProperty("Accept", "*/*");
+        req.setRequestProperty("Cookie", gCookieID);
+        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");        
+        
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         String inputLine;
         StringBuilder stringBuilder = new StringBuilder();
@@ -212,9 +291,10 @@ public class Utility {
             stringBuilder.append(inputLine);
         }
         resp = stringBuilder.toString();
+        
         String[] tmp = resp.split("\'");
         for (String str : tmp) {
-            if (str.startsWith("<div class)")) {
+            if (str.startsWith("<div class")) {
                 String strHtml = str.replace("\\", "");
                 int idx = -1;
                 while ((idx = strHtml.indexOf("class=\"media\"", idx + 1)) >= 0) {
@@ -295,8 +375,33 @@ public class Utility {
         return sMacAddress;
     }
 
-    static void deleteItem(String selectedValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    static void deleteItem(String strLink) throws IOException {
+        Utility.getTokenToDeleteItem("https://fril.jp/sell");
+        String[] strTmp = strLink.split("/");
+        String strLink2 = "https://fril.jp/item/" + strTmp[strTmp.length -1 ];
+        
+        String formUrl = strLink2; // @"https://fril.jp/item/75371faa081354d19098b338bc7f7ed8";
+        String formParams = "_method=delete&authenticity_token=" + URLEncoder.encode(token, "UTF-8");
+        
+        URL url = new URL(formUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        req.setRequestProperty("Cookie", cookieID);
+        req.setInstanceFollowRedirects(false);
+        req.setRequestMethod("POST");
+        req.setRequestProperty("Referer", "https://fril.jp/sell");
+        req.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        
+        byte[] bytes = formParams.getBytes(StandardCharsets.US_ASCII);
+        req.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+        //Send POST request
+        req.setDoOutput(true);
+        try (DataOutputStream wr = new DataOutputStream(req.getOutputStream())) {
+            wr.writeBytes(formParams);
+            wr.flush();
+            wr.close();
+        }
+        
     }
 
     static EditInfo getEditInfo(String selectedValue) {

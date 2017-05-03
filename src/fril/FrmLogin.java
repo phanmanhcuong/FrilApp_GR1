@@ -12,6 +12,7 @@ import java.net.HttpCookie;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -163,7 +164,10 @@ public class FrmLogin extends javax.swing.JPanel {
         password = new String(PasswordField.getPassword());
 
         try {
-            Utility.logIn(FrmLogin.this, username, password);
+            //Utility.logIn(FrmLogin.this, username, password);
+            Utility.logIn(username, password);
+            JFrame topFrame = (JFrame) FrmLogin.this.getRootPane().getParent();
+            topFrame.dispose();
         } catch (IOException ex) {
             Logger.getLogger(FrmLogin.class.getName()).log(Level.SEVERE, null, ex);
         }
