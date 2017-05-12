@@ -43,16 +43,16 @@ public class ListItems extends javax.swing.JFrame {
 
     /**
      * Creates new form ListItems
+     *
      * @throws java.io.IOException
      */
     public ListItems() throws IOException {
         initComponents();
-        
+
         //TODO
         //boolean bAccessible = GetGrant2Access(daysRemain);
         //FrmLicenseRequest frmLicenseRequest = new FrmLicenseRequest(bAccessible, daysRemain);
         //frmLicenseRequest.ShowDialog();
-
         //myTimer.setDelay(Utility.g_refreshPeriod);
         ActionListener refreshListView = new ActionListener() {
             @Override
@@ -62,7 +62,7 @@ public class ListItems extends javax.swing.JFrame {
         };
         myTimer = new Timer(Utility.g_refreshPeriod, refreshListView);
         myTimer.start();
-        
+
         //TODO
         //addUserAccount2Combobox();
         //exhibition tab
@@ -101,12 +101,17 @@ public class ListItems extends javax.swing.JFrame {
                     selectedValue = jTable_exhibition.getValueAt(selectedRow, 1).toString();
                     EditInfo editedInfo = Utility.getEditInfo(selectedValue);
                     editedInfo.strHref = "" + selectedValue;
-                    AddNewItem frmAddNewItem = new AddNewItem();
-                    frmAddNewItem.SetFormListItems(ListItems.this);
-                    frmAddNewItem.SetEditedProductInfo(editedInfo);
-                    frmAddNewItem.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    frmAddNewItem.pack();
-                    frmAddNewItem.setVisible(true);
+                    AddNewItem frmAddNewItem;
+                    try {
+                        frmAddNewItem = new AddNewItem();
+                        frmAddNewItem.SetFormListItems(ListItems.this);
+                        frmAddNewItem.SetEditedProductInfo(editedInfo);
+                        frmAddNewItem.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        frmAddNewItem.pack();
+                        frmAddNewItem.setVisible(true);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else if (jTable_exhibition.getSelectedColumn() == 5) { //delete item
                     int dialogResult = JOptionPane.showConfirmDialog(null, "Delete ?", "Confirm delete item", JOptionPane.YES_NO_OPTION);
                     if (dialogResult == JOptionPane.YES_OPTION) {
@@ -117,7 +122,7 @@ public class ListItems extends javax.swing.JFrame {
                             refreshListView();
                         } catch (IOException ex) {
                             Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
-                        }                     
+                        }
                     }
                 }
             }
@@ -136,7 +141,7 @@ public class ListItems extends javax.swing.JFrame {
             }
         };
         jTable_trading.setModel(defaultTableModelTrading);
-        
+
         refreshListView();
         refreshTradingListView();
     }
@@ -302,12 +307,18 @@ public class ListItems extends javax.swing.JFrame {
 
     private void btn_AddNewItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_AddNewItemMouseClicked
         // TODO add your handling code here:
-        AddNewItem frmAddNewItem = new AddNewItem();
-        frmAddNewItem.SetFormListItems(this);
+        AddNewItem frmAddNewItem;
+        try {
+            frmAddNewItem = new AddNewItem();
+            frmAddNewItem.SetFormListItems(this);
+            frmAddNewItem.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            frmAddNewItem.pack();
+            
+            frmAddNewItem.setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        frmAddNewItem.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        frmAddNewItem.pack();
-        frmAddNewItem.setVisible(true);
     }//GEN-LAST:event_btn_AddNewItemMouseClicked
 
     private void btn_ProductScheduleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ProductScheduleMouseClicked
@@ -351,7 +362,7 @@ public class ListItems extends javax.swing.JFrame {
             URL url = new URL(itemList.get(i).strImageLink);
             HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
             req.setRequestMethod("GET");
-            
+
             //get shipping date information
             String tradingFullPage = getTradingFullPage(itemList.get(i).strHref);
             int startIndex = tradingFullPage.indexOf("<div class=\"card\">");
@@ -392,8 +403,8 @@ public class ListItems extends javax.swing.JFrame {
                     defaultTableModel.addRow(new Object[]{itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, shippingDate, shippingAddress});
                 }
             } catch (IOException e) {
-            
-            }      
+
+            }
         }
     }
 
@@ -414,9 +425,9 @@ public class ListItems extends javax.swing.JFrame {
                 Image image3 = image2.getScaledInstance(150, 150, Image.SCALE_SMOOTH); //resize image
                 ImageIcon imageicon2 = new ImageIcon(image3);
                 if (null != bufferedImage) {
-                    defaultTableModel.addRow(new Object[]{imageicon2, itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, "Click to edit"});
+                    defaultTableModel.addRow(new Object[]{imageicon2, itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, "Click to edit", "Click to delete"});
                 } else {
-                    defaultTableModel.addRow(new Object[]{itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, "Click to edit"});
+                    defaultTableModel.addRow(new Object[]{itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, "Click to edit", "Click to delete"});
                 }
             } catch (IOException e) {
 
@@ -482,5 +493,250 @@ public class ListItems extends javax.swing.JFrame {
             Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+    
+    public class EditItemInfo
+    {
+        public int id;
+        public int user_id;
+        public String name;
+        public String detail;
+        public int parent_category_id;
+        public int category_id;
+        public int size_id;
+        public Object brand_id;
+        public Object informal_brand_id;
+        public int status;
+        public int origin_price;
+        public int sell_price;
+        public int transaction_status;
+        public int carriage;
+        public int delivery_method;
+        public int delivery_date;
+        public int delivery_area;
+        public int open_flag;
+        public int sold_out_flag;
+        public String created_at;
+        public String updated_at;
+        public String category_name;
+        public String size_name;
+        public String brand_name;
+        public List<Object> related_size_group_ids;
+        public String request_required;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDetail() {
+            return detail;
+        }
+
+        public void setDetail(String detail) {
+            this.detail = detail;
+        }
+
+        public int getParent_category_id() {
+            return parent_category_id;
+        }
+
+        public void setParent_category_id(int parent_category_id) {
+            this.parent_category_id = parent_category_id;
+        }
+
+        public int getCategory_id() {
+            return category_id;
+        }
+
+        public void setCategory_id(int category_id) {
+            this.category_id = category_id;
+        }
+
+        public int getSize_id() {
+            return size_id;
+        }
+
+        public void setSize_id(int size_id) {
+            this.size_id = size_id;
+        }
+
+        public Object getBrand_id() {
+            return brand_id;
+        }
+
+        public void setBrand_id(Object brand_id) {
+            this.brand_id = brand_id;
+        }
+
+        public Object getInformal_brand_id() {
+            return informal_brand_id;
+        }
+
+        public void setInformal_brand_id(Object informal_brand_id) {
+            this.informal_brand_id = informal_brand_id;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public int getOrigin_price() {
+            return origin_price;
+        }
+
+        public void setOrigin_price(int origin_price) {
+            this.origin_price = origin_price;
+        }
+
+        public int getSell_price() {
+            return sell_price;
+        }
+
+        public void setSell_price(int sell_price) {
+            this.sell_price = sell_price;
+        }
+
+        public int getTransaction_status() {
+            return transaction_status;
+        }
+
+        public void setTransaction_status(int transaction_status) {
+            this.transaction_status = transaction_status;
+        }
+
+        public int getCarriage() {
+            return carriage;
+        }
+
+        public void setCarriage(int carriage) {
+            this.carriage = carriage;
+        }
+
+        public int getDelivery_method() {
+            return delivery_method;
+        }
+
+        public void setDelivery_method(int delivery_method) {
+            this.delivery_method = delivery_method;
+        }
+
+        public int getDelivery_date() {
+            return delivery_date;
+        }
+
+        public void setDelivery_date(int delivery_date) {
+            this.delivery_date = delivery_date;
+        }
+
+        public int getDelivery_area() {
+            return delivery_area;
+        }
+
+        public void setDelivery_area(int delivery_area) {
+            this.delivery_area = delivery_area;
+        }
+
+        public int getOpen_flag() {
+            return open_flag;
+        }
+
+        public void setOpen_flag(int open_flag) {
+            this.open_flag = open_flag;
+        }
+
+        public int getSold_out_flag() {
+            return sold_out_flag;
+        }
+
+        public void setSold_out_flag(int sold_out_flag) {
+            this.sold_out_flag = sold_out_flag;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public String getUpdated_at() {
+            return updated_at;
+        }
+
+        public void setUpdated_at(String updated_at) {
+            this.updated_at = updated_at;
+        }
+
+        public String getCategory_name() {
+            return category_name;
+        }
+
+        public void setCategory_name(String category_name) {
+            this.category_name = category_name;
+        }
+
+        public String getSize_name() {
+            return size_name;
+        }
+
+        public void setSize_name(String size_name) {
+            this.size_name = size_name;
+        }
+
+        public String getBrand_name() {
+            return brand_name;
+        }
+
+        public void setBrand_name(String brand_name) {
+            this.brand_name = brand_name;
+        }
+
+        public List<Object> getRelated_size_group_ids() {
+            return related_size_group_ids;
+        }
+
+        public void setRelated_size_group_ids(List<Object> related_size_group_ids) {
+            this.related_size_group_ids = related_size_group_ids;
+        }
+
+        public String getRequest_required() {
+            return request_required;
+        }
+
+        public void setRequest_required(String request_required) {
+            this.request_required = request_required;
+        }
+        
+    }
+    
+    public class EditInfo {
+        public EditItemInfo editItemInfo;
+        public List<String> imageLinkList;
+        public String strHref;
     }
 }

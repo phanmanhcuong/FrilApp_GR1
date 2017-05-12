@@ -5,12 +5,19 @@
  */
 package fril;
 
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 import javax.imageio.ImageIO;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -20,18 +27,49 @@ import javax.swing.JLabel;
  */
 public class Test extends JFrame{
     
-    public Test() throws MalformedURLException, IOException{
-        this.setSize(400, 400);
-        JLabel label = new JLabel();
-        add(label);
-        
-        BufferedImage image = ImageIO.read(new URL("https://img.fril.jp/img/70447010/m/192497049.jpg?1488985483"));
-        ImageIcon icon = new ImageIcon(image);
-        label.setIcon(icon);      
-        
-    }
+  
     public static void main(String[] args) throws IOException{
         Test test = new Test();
+        test.setSize(400, 400);
         test.setVisible(true);
+        JButton close = new JButton();
+        close.addActionListener(new Action() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                test.dispose();
+            }
+
+            @Override
+            public Object getValue(String key) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void putValue(String key, Object value) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void setEnabled(boolean b) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public boolean isEnabled() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void addPropertyChangeListener(PropertyChangeListener listener) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void removePropertyChangeListener(PropertyChangeListener listener) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        }); 
+        test.add(close);
     }
 }

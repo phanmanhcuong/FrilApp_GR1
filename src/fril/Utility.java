@@ -6,6 +6,7 @@
 package fril;
 
 import static fril.FrmLogin.LOGIN_FAIL;
+import fril.ListItems.EditInfo;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -158,7 +159,13 @@ public class Utility {
             token = tmp[2]; //get token
         }
     }
-   
+    
+//    public static void getTokenTest(String frmUrl, Object object){
+//        Class frm = object.getClass();
+//        if(instanceof == AddNewItem.class){
+//            
+//        }
+//    }
     public static void getTokenToUploadComment(String formUrl) throws MalformedURLException, IOException{
         cookieID = "";
         token = "";

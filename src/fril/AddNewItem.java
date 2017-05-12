@@ -5,35 +5,59 @@
  */
 package fril;
 
+import fril.ListItems.EditInfo;
+import static fril.Utility.createCookie;
 import java.awt.Image;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.util.JSONPObject;
 import org.codehaus.jackson.type.TypeReference;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 
 /**
  *
  * @author CuongPhan
  */
 public class AddNewItem extends javax.swing.JFrame {
+
     private EditInfo editInfo = null;
     private String[] imgPaths = new String[4];
     private String[] imgLinks = new String[4];
     ListItems frmListItems = null;
     List<Category> lstCategory;
     List<Sizes> lstSize;
-    
-    
-    
+    private List<String> lstIDImg2Delete = new ArrayList<String>();
+    private static String token = "";
+    private static String cookieID = "";
+    private static String authenticationToken = "";
+
 //    public static void main(String[] args ){
 //        AddNewItem frmAddNewItem = new AddNewItem();
 //        //frmAddNewItem.SetEditedProductInfo(editedInfo);
@@ -43,9 +67,14 @@ public class AddNewItem extends javax.swing.JFrame {
 //    }
     /**
      * Creates new form AddNewItem
+     *
+     * @throws java.io.IOException
      */
-    public AddNewItem() {
+    public AddNewItem() throws IOException {
         initComponents();
+        lstSize = getSizes();
+        initializeComboboxes();
+        updateEditedProductInfo();
     }
 
     /**
@@ -66,37 +95,56 @@ public class AddNewItem extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jComboBox4 = new javax.swing.JComboBox<>();
-        jComboBox5 = new javax.swing.JComboBox<>();
+        cmbShippingPlace = new javax.swing.JComboBox<>();
+        cmbEstimatedDateOfShipment = new javax.swing.JComboBox<>();
+        cmbShippingMethod = new javax.swing.JComboBox<>();
         cmbShippingChangeOfBuden = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         cmbStateOfComodity = new javax.swing.JComboBox<>();
-        jComboBox8 = new javax.swing.JComboBox<>();
-        jComboBox9 = new javax.swing.JComboBox<>();
+        cmbSize = new javax.swing.JComboBox<>();
         cmbCategories = new javax.swing.JComboBox<>();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox11 = new javax.swing.JComboBox<>();
+        lbPicture1 = new javax.swing.JLabel();
+        lbPicture2 = new javax.swing.JLabel();
+        lbPicture3 = new javax.swing.JLabel();
+        lbPicture4 = new javax.swing.JLabel();
+        btnEdit1 = new javax.swing.JButton();
+        btnDelete1 = new javax.swing.JButton();
+        btnEdit2 = new javax.swing.JButton();
+        btnDelete2 = new javax.swing.JButton();
+        btnEdit3 = new javax.swing.JButton();
+        btnDelete3 = new javax.swing.JButton();
+        btnEdit4 = new javax.swing.JButton();
+        btnDelete4 = new javax.swing.JButton();
+        cmbCategoryChild = new javax.swing.JComboBox<>();
+        cmbCategoryChild2 = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        cmbPurchaseApplication = new javax.swing.JComboBox<>();
+        jLabel18 = new javax.swing.JLabel();
+        tfBrand = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jLabelName = new javax.swing.JLabel();
+        tfProductName = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        taProductDescription = new javax.swing.JTextArea();
+        jLabel21 = new javax.swing.JLabel();
+        tfProductPrize = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        btnUpload = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Add New Item");
 
         cmbUserLst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbUserLst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbUserLstSelected(evt);
+            }
+        });
 
         jTextField2.setText("Product Images");
 
@@ -104,7 +152,7 @@ public class AddNewItem extends javax.swing.JFrame {
 
         jLabel3.setText("Purchase Aplication");
 
-        jLabel4.setText("Shipping Date (*)");
+        jLabel4.setText("Shipping Place (*)");
 
         jLabel5.setText("Estimate Date of Shipment (*)");
 
@@ -116,71 +164,146 @@ public class AddNewItem extends javax.swing.JFrame {
 
         jLabel9.setText("State of Comodity (*)");
 
-        jLabel10.setText("Brand");
-
         jLabel11.setText("Size (*)");
 
         jLabel12.setText("Category (*)");
 
         jLabel13.setText("Product Details");
 
-        jLabel14.setText("Picture 1");
-        jLabel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel14.addMouseListener(new java.awt.event.MouseAdapter() {
+        cmbCategories.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categorySelected(evt);
+            }
+        });
+
+        lbPicture1.setText("Picture 1");
+        lbPicture1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbPicture1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 picture1ClickedHandle(evt);
             }
         });
 
-        jLabel15.setText("Picture 2");
-        jLabel15.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel15.addMouseListener(new java.awt.event.MouseAdapter() {
+        lbPicture2.setText("Picture 2");
+        lbPicture2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbPicture2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 picture2ClickedHandle(evt);
             }
         });
 
-        jLabel16.setText("Picture 3");
-        jLabel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel16.addMouseListener(new java.awt.event.MouseAdapter() {
+        lbPicture3.setText("Picture 3");
+        lbPicture3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbPicture3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 picture3ClickedHandle(evt);
             }
         });
 
-        jLabel17.setText("Picture 4");
-        jLabel17.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jLabel17.addMouseListener(new java.awt.event.MouseAdapter() {
+        lbPicture4.setText("Picture 4");
+        lbPicture4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbPicture4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 picture4ClickedHandle(evt);
             }
         });
 
-        jButton1.setText("Edit");
-
-        jButton2.setText("Delete");
-
-        jButton3.setText("Edit");
-
-        jButton4.setText("Delete");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnEdit1.setText("Edit");
+        btnEdit1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnEdit_Clicked(evt);
             }
         });
 
-        jButton5.setText("Edit");
-
-        jButton6.setText("Delete");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete1.setText("Delete");
+        btnDelete1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnDelete_Clicked(evt);
             }
         });
 
-        jButton7.setText("Edit");
+        btnEdit2.setText("Edit");
+        btnEdit2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit_Clicked(evt);
+            }
+        });
 
-        jButton8.setText("Delete");
+        btnDelete2.setText("Delete");
+        btnDelete2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelete_Clicked(evt);
+            }
+        });
+
+        btnEdit3.setText("Edit");
+        btnEdit3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit_Clicked(evt);
+            }
+        });
+
+        btnDelete3.setText("Delete");
+
+        btnEdit4.setText("Edit");
+        btnEdit4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit_Clicked(evt);
+            }
+        });
+
+        btnDelete4.setText("Delete");
+
+        cmbCategoryChild.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categoryChildSelected(evt);
+            }
+        });
+
+        cmbCategoryChild2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categoryChild2Selected(evt);
+            }
+        });
+
+        jLabel1.setText("Purchase Application");
+
+        jLabel18.setText("Brand");
+
+        tfBrand.setText("指定なし");
+        tfBrand.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfBrandActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setText("Merchandise Information");
+
+        jLabelName.setText("Product Name (*)");
+
+        jLabel20.setText("Product Description (*)");
+
+        taProductDescription.setColumns(20);
+        taProductDescription.setRows(5);
+        jScrollPane1.setViewportView(taProductDescription);
+
+        jLabel21.setText("Product Prize (*)");
+
+        jLabel22.setText("円");
+
+        btnUpload.setText("Upload");
+        btnUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadActionPerformed(evt);
+            }
+        });
+
+        jButton10.setText("Cancle");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancle_Clicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -194,71 +317,102 @@ public class AddNewItem extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmbUserLst, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGap(32, 32, 32)
-                                    .addComponent(jButton2))
-                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(36, 36, 36)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel9)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(lbPicture1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jLabel12)
+                                                .addComponent(btnEdit1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addGap(32, 32, 32)
+                                            .addComponent(btnDelete1))
+                                        .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(jLabel18)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel13)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(40, 40, 40)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBox5, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbShippingPlace, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbEstimatedDateOfShipment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbShippingMethod, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmbShippingChangeOfBuden, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmbStateOfComodity, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBox8, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jComboBox9, javax.swing.GroupLayout.Alignment.LEADING, 0, 198, Short.MAX_VALUE)
+                                    .addComponent(cmbSize, javax.swing.GroupLayout.Alignment.LEADING, 0, 198, Short.MAX_VALUE)
                                     .addComponent(cmbCategories, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnEdit2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton4))
-                                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(btnDelete2)
+                                        .addGap(25, 25, 25))
+                                    .addComponent(lbPicture2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnEdit3, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                                        .addComponent(jButton6))
-                                    .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(btnDelete3))
+                                    .addComponent(cmbCategoryChild, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lbPicture3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jComboBox11, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(cmbCategoryChild2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addGap(41, 41, 41)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(lbPicture4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(btnEdit4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                                                .addComponent(jButton8))))))))
+                                                .addComponent(btnDelete4))))))
+                            .addComponent(tfBrand)))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(38, 38, 38)
+                                .addComponent(jLabel1))
                             .addComponent(jLabel8)
-                            .addComponent(jLabel13))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel10))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(38, 38, 38)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel20)
+                                    .addComponent(jLabelName)
+                                    .addComponent(jLabel21))))
+                        .addGap(75, 75, 75)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tfProductPrize)
+                                    .addComponent(btnUpload, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel22)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane1)
+                            .addComponent(tfProductName)
+                            .addComponent(cmbPurchaseApplication, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,166 +423,297 @@ public class AddNewItem extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
-                    .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                    .addComponent(lbPicture3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                    .addComponent(lbPicture4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbPicture1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbPicture2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7)
-                    .addComponent(jButton8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                    .addComponent(btnEdit1)
+                    .addComponent(btnDelete1)
+                    .addComponent(btnEdit2)
+                    .addComponent(btnDelete2)
+                    .addComponent(btnEdit3)
+                    .addComponent(btnDelete3)
+                    .addComponent(btnEdit4)
+                    .addComponent(btnDelete4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(cmbCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel11)
-                    .addComponent(jComboBox9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel10)
-                    .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbCategoryChild, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbCategoryChild2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(cmbStateOfComodity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(cmbSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmbStateOfComodity, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(cmbShippingChangeOfBuden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbShippingMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbEstimatedDateOfShipment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbShippingPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addGap(18, 18, 18))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbPurchaseApplication, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelName)
+                    .addComponent(tfProductName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel20)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfProductPrize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21)
+                    .addComponent(jLabel22))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnUpload)
+                    .addComponent(jButton10))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+    private void btnCancle_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancle_Clicked
+        //close
+        this.dispose();
+    }//GEN-LAST:event_btnCancle_Clicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnEdit_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit_Clicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+        JButton[] btnEdits = new JButton[]{btnEdit1, btnEdit2, btnEdit3, btnEdit4};
+        JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            for (int i = 0; i < 4; i++) {
+                if (evt.getActionCommand().equals(btnEdits[i].getName())) {
+                    imgPaths[i] = fileChooser.getSelectedFile().getName();
+                    ImageIcon imageIcon = new ImageIcon(
+                        new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
+                    label[i].setIcon(imageIcon);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnEdit_Clicked
+
+    private void categoryChildSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryChildSelected
+        if (lstCategory != null) {
+            int selectedIndex = cmbCategories.getSelectedIndex();
+            int childSelectedIndex = cmbCategoryChild.getSelectedIndex();
+            if (selectedIndex >= 0 && childSelectedIndex >= 0) {
+                List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
+                for (Child2 categoryChild2 : lstCategory.get(selectedIndex).children.get(childSelectedIndex).children) {
+                    lstCmbItem.add(new CmbItem("" + categoryChild2.id, categoryChild2.name));
+                }
+                for (CmbItem item : lstCmbItem) {
+                    cmbCategoryChild2.addItem(item.getText());
+                }
+            }
+        }
+    }//GEN-LAST:event_categoryChildSelected
+
+    private void cmbUserLstSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbUserLstSelected
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbUserLstSelected
 
     private void picture1ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture1ClickedHandle
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter = 
-                new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
         fileChooser.setFileFilter(fileFilter);
-        if(fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION){
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
             imgPaths[0] = fileChooser.getSelectedFile().getName();
             ImageIcon imageIcon = new ImageIcon(
-                    new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
-            jLabel14.setIcon(imageIcon);
+                new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
+            lbPicture1.setIcon(imageIcon);
         }
     }//GEN-LAST:event_picture1ClickedHandle
-
-    private void picture2ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture2ClickedHandle
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter = 
-                new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
-        fileChooser.setFileFilter(fileFilter);
-        if(fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION){
-            imgPaths[1] = fileChooser.getSelectedFile().getName();
-            ImageIcon imageIcon = new ImageIcon(
-                    new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
-            jLabel15.setIcon(imageIcon);
-        }
-    }//GEN-LAST:event_picture2ClickedHandle
-
-    private void picture3ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture3ClickedHandle
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter = 
-                new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
-        fileChooser.setFileFilter(fileFilter);
-        if(fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION){
-            imgPaths[2] = fileChooser.getSelectedFile().getName();
-            ImageIcon imageIcon = new ImageIcon(
-                    new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
-            jLabel16.setIcon(imageIcon);
-        }
-    }//GEN-LAST:event_picture3ClickedHandle
 
     private void picture4ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture4ClickedHandle
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter = 
-                new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
         fileChooser.setFileFilter(fileFilter);
-        if(fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION){
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
             imgPaths[3] = fileChooser.getSelectedFile().getName();
             ImageIcon imageIcon = new ImageIcon(
-                    new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
-            jLabel17.setIcon(imageIcon);
+                new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
+            lbPicture4.setIcon(imageIcon);
         }
     }//GEN-LAST:event_picture4ClickedHandle
+
+    private void picture2ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture2ClickedHandle
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            imgPaths[1] = fileChooser.getSelectedFile().getName();
+            ImageIcon imageIcon = new ImageIcon(
+                new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
+            lbPicture2.setIcon(imageIcon);
+        }
+    }//GEN-LAST:event_picture2ClickedHandle
+
+    private void categorySelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorySelected
+        if (lstCategory != null) {
+            int selectedIndex = cmbCategories.getSelectedIndex();
+            if (selectedIndex >= 0) {
+                List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
+                for (Child categoryChild : lstCategory.get(selectedIndex).children) {
+                    lstCmbItem.add(new CmbItem("" + categoryChild.id, categoryChild.name));
+                }
+                for (CmbItem item : lstCmbItem) {
+                    cmbCategoryChild.addItem(item.getText());
+                }
+            }
+        }
+    }//GEN-LAST:event_categorySelected
+
+    private void btnDelete_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete_Clicked
+        JButton[] btnEdits = new JButton[]{btnEdit1, btnEdit2, btnEdit3, btnEdit4};
+        JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+        for(int i = 0; i < 4; i ++){
+            if(evt.getActionCommand().equals(btnEdits[i].getName())){
+                String strImageID = getImageID(imgLinks[i]);
+                if(strImageID != null){
+                    lstIDImg2Delete.add(strImageID);
+                    label[i].setIcon(null);
+                    imgLinks[i] = null;
+                    imgPaths[i] = null;
+                }
+            }
+        }
+    }//GEN-LAST:event_btnDelete_Clicked
+
+    private void categoryChild2Selected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryChild2Selected
+        if (lstCategory != null) {
+            int selectedIndex = cmbCategories.getSelectedIndex();
+            int childSelectedIndex = cmbCategoryChild.getSelectedIndex();
+            int child2SelectedIndex = cmbCategoryChild2.getSelectedIndex();
+            if (selectedIndex >= 0 && childSelectedIndex >= 0 && child2SelectedIndex >= 0) {
+                List<Object> lstSizes = lstCategory.get(selectedIndex).children.get(childSelectedIndex).children.get(child2SelectedIndex).related_size_group_ids;
+                if (lstSizes.isEmpty()) {
+                    cmbSize.setEnabled(false);
+                } else {
+                    cmbSize.setEnabled(true);
+                    int nIdxSize = -1;
+                    nIdxSize = Integer.valueOf(lstSizes.get(0).toString());
+
+                    List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
+                    for (Size size : lstSize.get(nIdxSize - 1).sizes) {
+                        lstCmbItem.add(new CmbItem(String.valueOf(size.id), size.name));
+                    }
+                    for (CmbItem item : lstCmbItem) {
+                        cmbSize.addItem(item.getText());
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_categoryChild2Selected
+
+    private void picture3ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture3ClickedHandle
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            imgPaths[2] = fileChooser.getSelectedFile().getName();
+            ImageIcon imageIcon = new ImageIcon(
+                new ImageIcon(fileChooser.getSelectedFile().getName()).getImage().getScaledInstance(165, 140, Image.SCALE_DEFAULT));
+            lbPicture3.setIcon(imageIcon);
+        }
+    }//GEN-LAST:event_picture3ClickedHandle
+
+    private void tfBrandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfBrandActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfBrandActionPerformed
+
+    private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
+        try {
+            uploadItem();
+        } catch (IOException ex) {
+            Logger.getLogger(AddNewItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnUploadActionPerformed
 
     /**
      * @param args the command line arguments
      */
-   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDelete1;
+    private javax.swing.JButton btnDelete2;
+    private javax.swing.JButton btnDelete3;
+    private javax.swing.JButton btnDelete4;
+    private javax.swing.JButton btnEdit1;
+    private javax.swing.JButton btnEdit2;
+    private javax.swing.JButton btnEdit3;
+    private javax.swing.JButton btnEdit4;
+    private javax.swing.JButton btnUpload;
     private javax.swing.JComboBox<String> cmbCategories;
+    private javax.swing.JComboBox<String> cmbCategoryChild;
+    private javax.swing.JComboBox<String> cmbCategoryChild2;
+    private javax.swing.JComboBox<String> cmbEstimatedDateOfShipment;
+    private javax.swing.JComboBox<String> cmbPurchaseApplication;
     private javax.swing.JComboBox<String> cmbShippingChangeOfBuden;
+    private javax.swing.JComboBox<String> cmbShippingMethod;
+    private javax.swing.JComboBox<String> cmbShippingPlace;
+    private javax.swing.JComboBox<String> cmbSize;
     private javax.swing.JComboBox<String> cmbStateOfComodity;
     private javax.swing.JComboBox<String> cmbUserLst;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox11;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JComboBox<String> jComboBox5;
-    private javax.swing.JComboBox<String> jComboBox8;
-    private javax.swing.JComboBox<String> jComboBox9;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -436,9 +721,19 @@ public class AddNewItem extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelName;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JLabel lbPicture1;
+    private javax.swing.JLabel lbPicture2;
+    private javax.swing.JLabel lbPicture3;
+    private javax.swing.JLabel lbPicture4;
+    private javax.swing.JTextArea taProductDescription;
+    private javax.swing.JTextField tfBrand;
+    private javax.swing.JTextField tfProductName;
+    private javax.swing.JTextField tfProductPrize;
     // End of variables declaration//GEN-END:variables
-    
+
     void SetFormListItems(ListItems listItems) {
         frmListItems = listItems;
     }
@@ -446,61 +741,40 @@ public class AddNewItem extends javax.swing.JFrame {
     void SetEditedProductInfo(EditInfo editedProductInfo) {
         editInfo = editedProductInfo;
     }
+
     
-    private List<Sizes> getSizes() throws MalformedURLException, IOException{
-        List<ItemShortInfo> lstItem = new ArrayList<ItemShortInfo>();
-        String frmUrl = "https://fril.jp/ajax/size";
-        URL url = new URL(frmUrl);
-        HttpsURLConnection req = (HttpsURLConnection)url.openConnection();
-        req.setRequestMethod("GET");
-        req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
-        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
-        
-        String fullPage;
-        String inputLine;
-        StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
-        while((inputLine = bufferedReader.readLine())!= null){
-            stringBuilder.append(inputLine);
-        }
-        fullPage = stringBuilder.toString();
-        ObjectMapper mapper =  new ObjectMapper();
-        List<Sizes> lstSizes = mapper.readValue(fullPage, new TypeReference<List<Sizes>>(){});
-        //the 2nd way to create get mapper.readValue();
-        //List<Sizes> lstSizes = Arrays.asList(mapper.readValue(fullPage, Sizes.class)); 
-        return lstSizes;
-    }
-    
-    void InitializeComboboxes() throws IOException{
-        String userLst = Settings.userNameLst;
-        StringBuilder sb = new StringBuilder(userLst);
-        sb = sb.deleteCharAt(sb.length()-1);
-        userLst = sb.toString();
-        
-        //get users list
-        List<CmbItem> lstCmbUserItem = new ArrayList<CmbItem>();
-        String[] strUserLst = userLst.split(";");
-        for (String strUserLst1 : strUserLst) {
-            if (strUserLst1.length() > 0) {
-                lstCmbUserItem.add(0, new CmbItem(strUserLst1, strUserLst1));
-            }
-        }
-        //initialize selections for user combobox
-        cmbUserLst.setSelectedItem("Text");
-        for(CmbItem user : lstCmbUserItem){
-            cmbUserLst.addItem(user.toString());
-        }
-        
+
+    private void initializeComboboxes() throws IOException {
+        //TODO
+//        String userLst = Settings.userNameLst;
+//        StringBuilder sb = new StringBuilder(userLst);
+//        sb = sb.deleteCharAt(sb.length()-1);
+//        userLst = sb.toString();
+//        
+//        //get users list
+//        List<CmbItem> lstCmbUserItem = new ArrayList<CmbItem>();
+//        String[] strUserLst = userLst.split(";");
+//        for (String strUserLst1 : strUserLst) {
+//            if (strUserLst1.length() > 0) {
+//                lstCmbUserItem.add(0, new CmbItem(strUserLst1, strUserLst1));
+//            }
+//        }
+//        //initialize selections for user combobox
+//        cmbUserLst.setSelectedItem("Text");
+//        for(CmbItem user : lstCmbUserItem){
+//            cmbUserLst.addItem(user.toString());
+//        }
+
         //get categories list
         lstCategory = getCategory();
-        if(lstCategory != null){
+        if (lstCategory != null) {
             cmbCategories.setSelectedItem("Text");
             List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
-            for(int i = 0; i < lstCategory.size(); i++){
-                lstCmbItem.add(new CmbItem("" + lstCategory.get(i).id, lstCategory.get(i).name));
+            for (int i = 0; i < lstCategory.size(); i++) {
+                lstCmbItem.add(new CmbItem(lstCategory.get(i).name, "" + lstCategory.get(i).id));
             }
             //initialize selections for category combobox
-            for(CmbItem item : lstCmbItem){
+            for (CmbItem item : lstCmbItem) {
                 cmbCategories.addItem(item.toString());
             }
         }
@@ -512,37 +786,417 @@ public class AddNewItem extends javax.swing.JFrame {
         lstStateOfComodity.add(new CmbItem("やや傷や汚れあり", "3"));
         lstStateOfComodity.add(new CmbItem("傷や汚れあり", "2"));
         lstStateOfComodity.add(new CmbItem("全体的に状態が悪い", "1"));
-        
-        for(int i = 0; i < lstStateOfComodity.size(); i++){
-            cmbStateOfComodity.addItem(lstStateOfComodity.get(i).toString());
+        for (CmbItem stateOfComodity : lstStateOfComodity) {
+            cmbStateOfComodity.addItem(stateOfComodity.getText());
         }
-        
+
+        //cmb ShippingChangeOfBuden
+        List<CmbItem> lstShippingChangeOfBuden = new ArrayList<CmbItem>();
+        lstShippingChangeOfBuden.add(new CmbItem("送料込み（出品者が負担)", "1"));
+        lstShippingChangeOfBuden.add(new CmbItem("着払い（購入者が負担)", "2"));
+        for (CmbItem shippingChangeOfBuden : lstShippingChangeOfBuden) {
+            cmbShippingChangeOfBuden.addItem(shippingChangeOfBuden.getText());
+        }
+
+        //cmb ShippingMethod
+        List<CmbItem> lstShippingMethod = new ArrayList<CmbItem>();
+        lstShippingMethod.add(new CmbItem("未定", "9"));
+        lstShippingMethod.add(new CmbItem("ゆうパック着払い", "8"));
+        lstShippingMethod.add(new CmbItem("ヤマト宅急便", "6"));
+        lstShippingMethod.add(new CmbItem("ゆうパケット", "17"));
+        lstShippingMethod.add(new CmbItem("ゆうメール着払い", "13"));
+        for (CmbItem shippingMethod : lstShippingMethod) {
+            cmbShippingMethod.addItem(shippingMethod.getText());
+        }
+
+        //cmb EstimatedShippingTime
+        List<CmbItem> lstEstimatedShippingTime = new ArrayList<CmbItem>();
+        lstEstimatedShippingTime.add(new CmbItem("支払い後、1～2日で発送", "1"));
+        lstEstimatedShippingTime.add(new CmbItem("支払い後、2～3日で発送", "2"));
+        lstEstimatedShippingTime.add(new CmbItem("支払い後、4～7日で発送", "3"));
+        for (CmbItem estimatedShippingTime : lstEstimatedShippingTime) {
+            cmbEstimatedDateOfShipment.addItem(estimatedShippingTime.getText());
+        }
+
+        //cmb ShippingPlace
+        List<CmbItem> lstShippingPlace = new ArrayList<CmbItem>();
+        lstShippingPlace.add(new CmbItem("支払い後、1～2日で発送", "1"));
+        lstShippingPlace.add(new CmbItem("岩手県", "3"));
+        lstShippingPlace.add(new CmbItem("宮城県", "4"));
+        lstShippingPlace.add(new CmbItem("秋田県", "5"));
+        lstShippingPlace.add(new CmbItem("山形県", "6"));
+        lstShippingPlace.add(new CmbItem("福島県", "7"));
+        lstShippingPlace.add(new CmbItem("茨城県", "8"));
+        lstShippingPlace.add(new CmbItem("栃木県", "9"));
+        lstShippingPlace.add(new CmbItem("群馬県", "10"));
+        lstShippingPlace.add(new CmbItem("埼玉県", "11"));
+        lstShippingPlace.add(new CmbItem("千葉県", "12"));
+        lstShippingPlace.add(new CmbItem("東京都", "13"));
+        lstShippingPlace.add(new CmbItem("神奈川県", "14"));
+        lstShippingPlace.add(new CmbItem("新潟県", "15"));
+        lstShippingPlace.add(new CmbItem("富山県", "16"));
+        lstShippingPlace.add(new CmbItem("石川県", "17"));
+        lstShippingPlace.add(new CmbItem("福井県", "18"));
+        lstShippingPlace.add(new CmbItem("山梨県", "19"));
+        lstShippingPlace.add(new CmbItem("長野県", "20"));
+        lstShippingPlace.add(new CmbItem("岐阜県", "21"));
+        lstShippingPlace.add(new CmbItem("静岡県", "22"));
+        lstShippingPlace.add(new CmbItem("愛知県", "23"));
+        lstShippingPlace.add(new CmbItem("三重県", "24"));
+        lstShippingPlace.add(new CmbItem("滋賀県", "25"));
+        lstShippingPlace.add(new CmbItem("大阪府", "27"));
+        lstShippingPlace.add(new CmbItem("兵庫県", "28"));
+        lstShippingPlace.add(new CmbItem("奈良県", "29"));
+        lstShippingPlace.add(new CmbItem("和歌山県", "30"));
+        lstShippingPlace.add(new CmbItem("鳥取県", "31"));
+        lstShippingPlace.add(new CmbItem("島根県", "32"));
+        lstShippingPlace.add(new CmbItem("岡山県", "33"));
+        lstShippingPlace.add(new CmbItem("広島県", "34"));
+        lstShippingPlace.add(new CmbItem("山口県", "35"));
+        lstShippingPlace.add(new CmbItem("徳島県", "36"));
+        lstShippingPlace.add(new CmbItem("香川県", "37"));
+        lstShippingPlace.add(new CmbItem("愛媛県", "38"));
+        lstShippingPlace.add(new CmbItem("高知県", "39"));
+        lstShippingPlace.add(new CmbItem("福岡県", "40"));
+        lstShippingPlace.add(new CmbItem("佐賀県", "41"));
+        lstShippingPlace.add(new CmbItem("長崎県", "42"));
+        lstShippingPlace.add(new CmbItem("熊本県", "43"));
+        lstShippingPlace.add(new CmbItem("大分県", "44"));
+        lstShippingPlace.add(new CmbItem("宮崎県", "45"));
+        lstShippingPlace.add(new CmbItem("鹿児島県", "46"));
+        lstShippingPlace.add(new CmbItem("沖縄県", "47"));
+        for (CmbItem shippingPlace : lstShippingPlace) {
+            cmbShippingPlace.addItem(shippingPlace.getText());
+        }
+
+        //cmb PurchaseApplication
+        List<CmbItem> lstPurchaseApplication = new ArrayList<CmbItem>();
+        lstPurchaseApplication.add(new CmbItem("なし", "0"));
+        lstPurchaseApplication.add(new CmbItem("あり", "1"));
+        for (CmbItem purchaseApplication : lstPurchaseApplication) {
+            cmbPurchaseApplication.addItem(purchaseApplication.getText());
+        }
+    }
+
+    public void uploadItem() throws IOException {
+        //1. Go to mypage first
+        getCookieIdandToken("https://fril.jp/mypage");
+        //2. Go to item/new
+        getCookieIdandAuthenticationtoken("https://fril.jp/item/new");
+        //3. Post to item
+        String formUrl = "";
+        List<Map.Entry<String, String>> formData = new ArrayList<>();
+        formData.add(new AbstractMap.SimpleEntry<>("utf8", "✓"));
+        if (editInfo != null) {
+            formData.add(new AbstractMap.SimpleEntry<>("_method", "patch"));
+            String strLink = editInfo.strHref;
+            String[] strTmp = strLink.split("/");
+            formUrl = "https://fril.jp/item/" + strTmp[strTmp.length - 1];
+        } else {
+            formUrl = "https://fril.jp/item";
+        }
+
+        formData.add(new AbstractMap.SimpleEntry<>("authenticity_token", authenticationToken));
+        String[] strID = {null, null, null, null};
+        for (int idx = 0; idx < 4; idx++) {
+            strID[idx] = getImageID(imgLinks[idx]);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            formData.add(new AbstractMap.SimpleEntry<>("item_img_ids[] " + i, strID[i]));
+            if (editInfo != null) {
+                for (int idx = 0; idx < lstIDImg2Delete.size(); idx++) {
+                    if (lstIDImg2Delete.get(idx).equals(strID[i])) {
+                        formData.remove("item_img_ids[] " + i);
+                        formData.add(new AbstractMap.SimpleEntry<>("item_img_ids[] " + i, null));
+                    }
+                }
+            }
+
+            if (imgPaths[i] != null) {
+                formData.add(new AbstractMap.SimpleEntry<>("updates[] " + i, "1"));
+                formData.add(new AbstractMap.SimpleEntry<>("set_images[] " + i, "1"));
+            } else {
+                formData.add(new AbstractMap.SimpleEntry<>("updates[] " + i, null));
+                formData.add(new AbstractMap.SimpleEntry<>("set_images[] " + i, null));
+            }
+            formData.add(new AbstractMap.SimpleEntry<>("crop_x[] " + i, null));
+            formData.add(new AbstractMap.SimpleEntry<>("crop_y[] " + i, null));
+            formData.add(new AbstractMap.SimpleEntry<>("crop_size[] " + i, null));
+            formData.add(new AbstractMap.SimpleEntry<>("image_tmp " + i, null));
+        }
+
+        formData.add(new AbstractMap.SimpleEntry<>("item[category_id]", cmbCategoryChild2.getSelectedItem().toString()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[size_id]", cmbSize.getSelectedItem().toString()));
+
+        formData.add(new AbstractMap.SimpleEntry<>("item[brand_id]", null));
+        formData.add(new AbstractMap.SimpleEntry<>("item[status]", cmbStateOfComodity.getSelectedItem().toString()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[carriage]", cmbShippingChangeOfBuden.getSelectedItem().toString()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_method]", cmbShippingMethod.getSelectedItem().toString()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_date]", cmbEstimatedDateOfShipment.getSelectedItem().toString()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_area]", cmbShippingPlace.getSelectedItem().toString()));
+
+        formData.add(new AbstractMap.SimpleEntry<>("item[request_required]", "0"));
+        formData.add(new AbstractMap.SimpleEntry<>("item[name]", tfProductName.getText()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[detail]", taProductDescription.getText()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[sell_price]", tfProductPrize.getText()));
+
+        if (editInfo != null) {
+            for (int i = 0; i < lstIDImg2Delete.size(); i++) {
+                formData.add(new AbstractMap.SimpleEntry<>("delete_img_ids[]", lstIDImg2Delete.get(i)));
+            }
+        }
+        String result = uploadFilesToRemoteUrl(formUrl, imgPaths, cookieID, formData);
+        if (result.equals("{\"result\":true}")) {
+            if (frmListItems != null) {
+                frmListItems.refreshListView();
+                JOptionPane.showMessageDialog(null, "Upload item successfully");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Upload item failed");
+        }
+    }
+
+    private String uploadFilesToRemoteUrl(String formUrl, String[] files, String cookieID, List<Map.Entry<String, String>> formFields) throws UnsupportedEncodingException, MalformedURLException, IOException {
+        Date now = new Date();
+        //convert now to hexadecimal
+        String boundary = "----WebKitFormBoundary" + String.format("%040x", new BigInteger(1, now.toString().getBytes("UTF-16")));
+        URL url = new URL(formUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestMethod("POST");
+        req.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        req.setRequestProperty("Connection", "keep-alive");
+        req.setInstanceFollowRedirects(false);
+        req.setRequestProperty("Cookie", cookieID);
+
+        ByteArrayOutputStream memStream = new ByteArrayOutputStream();
+        byte[] boundarybytes = ("\r\n--" + boundary + "\r\n").getBytes(StandardCharsets.US_ASCII);
+        byte[] endBoundaryBytes = ("\r\n--" + boundary + "--").getBytes(StandardCharsets.US_ASCII);
+
+        String formdataTemplate = "\r\n--" + boundary + "\r\nContent-Disposition: form-data; name=\"%s\";\r\n\r\n%s";
+        if (formFields != null) {
+            for (Map.Entry<String, String> formField : formFields) {
+                String formitem = "";
+                String[] tmp = formField.getKey().split(" ");
+                String key = tmp[0];
+                if ("image_tmp".equals(key)) {
+                    formitem = "\r\n--" + boundary + "\r\nContent-Disposition: form-data; name=\"" + key + "\"; filename=\"\"\r\n" + "Content-Type: application/octet-stream\r\n\r\n";
+                } else {
+                    formitem = String.format(formdataTemplate, key, formField.getValue());
+                }
+                byte[] formitembytes = formitem.getBytes("UTF-8");
+                memStream.write(formitembytes, 0, formitembytes.length);
+            }
+        }
+
+        String headerTemplate = "Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n"
+                + "Content-Type: image/jpeg\r\n\r\n";
+        for (String file : files) {
+            if (file != null) {
+                memStream.write(boundarybytes, 0, boundarybytes.length);
+                String header = String.format(headerTemplate, "images[]", file);
+                byte[] headerbytes = header.getBytes("UTF-8");
+
+                memStream.write(headerbytes, 0, headerbytes.length);
+
+                FileInputStream fileStream = new FileInputStream(file);
+                byte[] buffer = new byte[1024];
+                int bytesRead = 0;
+                while ((bytesRead = fileStream.read(buffer, 0, buffer.length)) != 0) {
+                    memStream.write(buffer, 0, bytesRead);
+                }
+            }
+        }
+
+        memStream.write(endBoundaryBytes, 0, endBoundaryBytes.length);
+        req.setRequestProperty("Content-Length", String.valueOf(memStream.size()));
+        req.setDoOutput(true);
+        try (DataOutputStream wr = new DataOutputStream(req.getOutputStream())) {
+            byte[] tempBuffer = new byte[memStream.size()];
+            ByteArrayInputStream memStreamRead = new ByteArrayInputStream(tempBuffer, 0, tempBuffer.length);
+            memStreamRead.close();
+            wr.write(tempBuffer, 0, tempBuffer.length);
+            wr.flush();
+            wr.close();
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        String inputLine;
+        String resp = "";
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        resp = stringBuilder.toString();
+        return resp;
+    }
+
+    private void updateEditedProductInfo() {
+        if (editInfo != null) {
+            JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+            int index = 0;
+            for (String imgPath : editInfo.imageLinkList) {
+                imgLinks[index] = imgPath;
+                ImageIcon image = new ImageIcon(imgPath);
+                label[index++].setIcon(image);
+            }
+            String debugString = "";
+            //find categoryID
+            for (int i = 0; i < lstCategory.size(); i++) {
+                if (lstCategory.get(i).id == editInfo.editItemInfo.category_id) {
+                    debugString = "category: " + i + " " + lstCategory.get(i).name;
+                }
+                for (int j = 0; j < lstCategory.get(i).children.size(); j++) {
+                    if (lstCategory.get(i).children.get(j).id == editInfo.editItemInfo.category_id) {
+                        debugString += " category - child: " + j + " " + lstCategory.get(i).name;
+                    }
+                    for (int k = 0; k < lstCategory.get(i).children.get(j).children.size(); k++) {
+                        if (lstCategory.get(i).children.get(j).children.get(k).id == editInfo.editItemInfo.category_id) {
+                            debugString += " category - child2: " + k + " " + lstCategory.get(i).name;
+                            cmbCategories.setSelectedItem(lstCategory.get(i).id);
+                            cmbCategoryChild2.setSelectedItem(lstCategory.get(i).children.get(j).id);
+                            cmbCategoryChild2.setSelectedItem(lstCategory.get(i).children.get(j).children.get(k).id);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            cmbSize.setSelectedItem(editInfo.editItemInfo.size_id);
+            tfBrand.setText(editInfo.editItemInfo.brand_name);
+            cmbStateOfComodity.setSelectedItem(editInfo.editItemInfo.status);
+            cmbShippingChangeOfBuden.setSelectedItem(editInfo.editItemInfo.carriage);
+            cmbShippingMethod.setSelectedItem(editInfo.editItemInfo.delivery_method);
+            cmbShippingPlace.setSelectedItem(editInfo.editItemInfo.delivery_area);
+            cmbEstimatedDateOfShipment.setSelectedItem(editInfo.editItemInfo.delivery_date);
+
+            cmbPurchaseApplication.setSelectedItem(editInfo.editItemInfo.request_required);
+            tfProductName.setText(editInfo.editItemInfo.name);
+            taProductDescription.setText(editInfo.editItemInfo.detail);
+            tfProductPrize.setText(String.valueOf(editInfo.editItemInfo.sell_price));
+        }
+    }
+
+    public static void getCookieIdandToken(String formUrl) throws MalformedURLException, IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        String inputLine;
+        String resp;
+        //http request
+        URL url = new URL(formUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestMethod("GET");
+        req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        resp = stringBuilder.toString();
+        String cookie = req.getHeaderField("Set-Cookie");
+        String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
+        String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
+        cookieID = cookies[1]; //get cookie value
+
+        int nIdxStart = resp.indexOf("csrf-token");
+        int nIdxEnd = resp.indexOf("/>", nIdxStart);
+        String strTmp = resp.substring(nIdxStart, nIdxEnd - nIdxStart - 1);
+        String[] tmp = strTmp.split("\\\"");
+        if (tmp.length >= 3) {
+            token = tmp[2]; //get token
+        }
+    }
+
+    public static void getCookieIdandAuthenticationtoken(String formUrl) throws MalformedURLException, IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        String inputLine;
+        String resp;
+        //http request
+        URL url = new URL(formUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestMethod("GET");
+        req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        resp = stringBuilder.toString();
+        String cookie = req.getHeaderField("Set-Cookie");
+        String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
+        String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
+        cookieID = cookies[1]; //get cookie value
+
+        int nIdxStart = resp.indexOf("csrf-token");
+        int nIdxEnd = resp.indexOf("/>", nIdxStart);
+        String strTmp = resp.substring(nIdxStart, nIdxEnd - nIdxStart - 1);
+        String[] tmp = strTmp.split("\\\"");
+        if (tmp.length >= 3) {
+            authenticationToken = tmp[2]; //get authentication token
+        }
+    }
+
+    private List<Sizes> getSizes() throws MalformedURLException, IOException {
+        List<ItemShortInfo> lstItem = new ArrayList<ItemShortInfo>();
+        String frmUrl = "https://fril.jp/ajax/size";
+        URL url = new URL(frmUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestMethod("GET");
+        req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
+        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+
+        String fullPage;
+        String inputLine;
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        fullPage = stringBuilder.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        List<Sizes> lstSizes = mapper.readValue(fullPage, new TypeReference<List<Sizes>>() {
+        });
+        //the 2nd way to create get mapper.readValue();
+        //List<Sizes> lstSizes = Arrays.asList(mapper.readValue(fullPage, Sizes.class)); 
+        return lstSizes;
     }
 
     private List<Category> getCategory() throws MalformedURLException, IOException {
         String frmUrl = "https://fril.jp/ajax/category";
         URL url = new URL(frmUrl);
-        HttpsURLConnection req = (HttpsURLConnection)url.openConnection();
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
         req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
         req.setRequestProperty("Cookie", Utility.gCookieID);
-        
+
         String fullPage;
         String inputLine;
         StringBuilder stringBuilder = new StringBuilder();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
-        while((inputLine = bufferedReader.readLine())!= null){
+        while ((inputLine = bufferedReader.readLine()) != null) {
             stringBuilder.append(inputLine);
         }
         fullPage = stringBuilder.toString();
-        ObjectMapper mapper =  new ObjectMapper();
-        List<Category> category = mapper.readValue(fullPage, new TypeReference<List<Category>>(){});
+        ObjectMapper mapper = new ObjectMapper();
+        List<Category> category = mapper.readValue(fullPage, new TypeReference<List<Category>>() {});
+        //List<Category> category = Arrays.asList(mapper.readValue(fullPage, Category.class));
         //the 2nd way to create get mapper.readValue();
         //List<Sizes> lstSizes = Arrays.asList(mapper.readValue(fullPage, Sizes.class)); 
         return category;
     }
-    public static class Category {
+    
+    private String getImageID(String imgLink) {
+        String strIdImg = null;
+        if (imgLink != null && imgLink.contains("/original/")) {
+            String strImagePath = Utility.extractAttribute(imgLink, 0, "/original/", ".");
+            strIdImg = strImagePath;
+        }
+        return strIdImg;
+    }
+
+    public static class Child2 {
+
         public int id;
         public int parent_id;
         public String name;
@@ -557,6 +1211,9 @@ public class AddNewItem extends javax.swing.JFrame {
         public List<Object> related_size_group_ids;
         public List<Object> children;
 
+        public Child2() {
+        }
+        
         public int getId() {
             return id;
         }
@@ -663,7 +1320,258 @@ public class AddNewItem extends javax.swing.JFrame {
         
     }
 
+    public static class Child {
+
+        public int id;
+        public int parent_id;
+        public String name;
+        public String kana_name;
+        public String description;
+        public String sub_description;
+        public String seo_name;
+        public String seo_nickname;
+        public int sort;
+        public Object size_group_id;
+        public int open_flag;
+        public List<Object> related_size_group_ids;
+        public List<Child2> children;
+
+        public Child() {
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getParent_id() {
+            return parent_id;
+        }
+
+        public void setParent_id(int parent_id) {
+            this.parent_id = parent_id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getKana_name() {
+            return kana_name;
+        }
+
+        public void setKana_name(String kana_name) {
+            this.kana_name = kana_name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getSub_description() {
+            return sub_description;
+        }
+
+        public void setSub_description(String sub_description) {
+            this.sub_description = sub_description;
+        }
+
+        public String getSeo_name() {
+            return seo_name;
+        }
+
+        public void setSeo_name(String seo_name) {
+            this.seo_name = seo_name;
+        }
+
+        public String getSeo_nickname() {
+            return seo_nickname;
+        }
+
+        public void setSeo_nickname(String seo_nickname) {
+            this.seo_nickname = seo_nickname;
+        }
+
+        public int getSort() {
+            return sort;
+        }
+
+        public void setSort(int sort) {
+            this.sort = sort;
+        }
+
+        public Object getSize_group_id() {
+            return size_group_id;
+        }
+
+        public void setSize_group_id(Object size_group_id) {
+            this.size_group_id = size_group_id;
+        }
+
+        public int getOpen_flag() {
+            return open_flag;
+        }
+
+        public void setOpen_flag(int open_flag) {
+            this.open_flag = open_flag;
+        }
+
+        public List<Object> getRelated_size_group_ids() {
+            return related_size_group_ids;
+        }
+
+        public void setRelated_size_group_ids(List<Object> related_size_group_ids) {
+            this.related_size_group_ids = related_size_group_ids;
+        }
+
+        public List<Child2> getChildren() {
+            return children;
+        }
+
+        public void setChildren(List<Child2> children) {
+            this.children = children;
+        }
+
+    }
+
+    public static class Category {
+
+        public int id;
+        public int parent_id;
+        public String name;
+        public String kana_name;
+        public String description;
+        public String sub_description;
+        public String seo_name;
+        public String seo_nickname;
+        public int sort;
+        public int size_group_id;
+        public int open_flag;
+        public List<Object> related_size_group_ids;
+        public List<Child> children;
+
+        public Category() {
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getParent_id() {
+            return parent_id;
+        }
+
+        public void setParent_id(int parent_id) {
+            this.parent_id = parent_id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getKana_name() {
+            return kana_name;
+        }
+
+        public void setKana_name(String kana_name) {
+            this.kana_name = kana_name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getSub_description() {
+            return sub_description;
+        }
+
+        public void setSub_description(String sub_description) {
+            this.sub_description = sub_description;
+        }
+
+        public String getSeo_name() {
+            return seo_name;
+        }
+
+        public void setSeo_name(String seo_name) {
+            this.seo_name = seo_name;
+        }
+
+        public String getSeo_nickname() {
+            return seo_nickname;
+        }
+
+        public void setSeo_nickname(String seo_nickname) {
+            this.seo_nickname = seo_nickname;
+        }
+
+        public int getSort() {
+            return sort;
+        }
+
+        public void setSort(int sort) {
+            this.sort = sort;
+        }
+
+        public int getSize_group_id() {
+            return size_group_id;
+        }
+
+        public void setSize_group_id(int size_group_id) {
+            this.size_group_id = size_group_id;
+        }
+
+        public int getOpen_flag() {
+            return open_flag;
+        }
+
+        public void setOpen_flag(int open_flag) {
+            this.open_flag = open_flag;
+        }
+
+        public List<Object> getRelated_size_group_ids() {
+            return related_size_group_ids;
+        }
+
+        public void setRelated_size_group_ids(List<Object> related_size_group_ids) {
+            this.related_size_group_ids = related_size_group_ids;
+        }
+
+        public List<Child> getChildren() {
+            return children;
+        }
+
+        public void setChildren(List<Child> children) {
+            this.children = children;
+        }
+
+    }
+
     public static class Sizes {
+
         public int id;
         public String name;
         public List<Size> sizes;
@@ -691,10 +1599,11 @@ public class AddNewItem extends javax.swing.JFrame {
         public void setSizes(List<Size> sizes) {
             this.sizes = sizes;
         }
-        
+
     }
 
     public static class Size {
+
         public int id;
         public int category_id;
         public String name;
@@ -758,10 +1667,11 @@ public class AddNewItem extends javax.swing.JFrame {
         public void setUpdated_at(String updated_at) {
             this.updated_at = updated_at;
         }
-        
+
     }
 
     public static class CmbItem {
+
         public String Value;
         public String Text;
 
@@ -781,15 +1691,14 @@ public class AddNewItem extends javax.swing.JFrame {
             this.Text = Text;
         }
 
-        public CmbItem(String Value, String Text) {
+        public CmbItem(String Text, String Value) {
             this.Value = Value;
             this.Text = Text;
         }
-       
+
         @Override
-        public String toString(){
+        public String toString() {
             return Text;
         }
     }
 }
-
