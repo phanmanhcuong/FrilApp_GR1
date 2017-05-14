@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -26,14 +27,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 /**
  *
@@ -49,7 +50,8 @@ public class Utility {
     public static String token; //used in getTokenToDeleteItem(), getTokenToUploadComment()
     public static String comment_token; //used in getTokenToUploadComment()  
     public static int g_refreshPeriod = 60000; //60 second to refresh the item list
-    
+    public static int nIdxFound = -1; //used in getEditInfo
+
     static TrustManager[] trustAllCerts = new TrustManager[]{
         new X509TrustManager() {
 
@@ -113,7 +115,7 @@ public class Utility {
         return authenticityToken;
     }
 
-     private static void AddCookieStore(List<String> cookies) {
+    private static void AddCookieStore(List<String> cookies) {
         String[] cookieSplit;
         String cookieName;
         String cookieValue;
@@ -127,8 +129,8 @@ public class Utility {
             gCookieStore.add(null, httpCookie);
         }
     }
-     
-    public static void getTokenToDeleteItem(String formUrl) throws MalformedURLException, IOException{
+
+    public static void getTokenToDeleteItem(String formUrl) throws MalformedURLException, IOException {
         cookieID = "";
         token = "";
         StringBuilder stringBuilder = new StringBuilder();
@@ -140,7 +142,7 @@ public class Utility {
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
-        
+
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         while ((inputLine = bufferedReader.readLine()) != null) {
             stringBuilder.append(inputLine);
@@ -150,27 +152,27 @@ public class Utility {
         String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
         String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
         cookieID = cookies[1]; //get cookie value
-        
+
         int nIdxStart = resp.indexOf("csrf-token");
         int nIdxEnd = resp.indexOf("/>", nIdxStart);
         String strTmp = resp.substring(nIdxStart, nIdxEnd - nIdxStart - 1);
         String[] tmp = strTmp.split("\\\"");
-        if(tmp.length >= 3){
+        if (tmp.length >= 3) {
             token = tmp[2]; //get token
         }
     }
-    
+
 //    public static void getTokenTest(String frmUrl, Object object){
 //        Class frm = object.getClass();
 //        if(instanceof == AddNewItem.class){
 //            
 //        }
 //    }
-    public static void getTokenToUploadComment(String formUrl) throws MalformedURLException, IOException{
+    public static void getTokenToUploadComment(String formUrl) throws MalformedURLException, IOException {
         cookieID = "";
         token = "";
         comment_token = "";
-        
+
         StringBuilder stringBuilder = new StringBuilder();
         String inputLine;
         String resp;
@@ -180,7 +182,7 @@ public class Utility {
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
-        
+
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         while ((inputLine = bufferedReader.readLine()) != null) {
             stringBuilder.append(inputLine);
@@ -190,12 +192,12 @@ public class Utility {
         String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
         String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
         cookieID = cookies[1]; //get cookie value
-        
+
         token = extractAttribute(resp, 0, "\"authenticity_token\" value=\"", "\" />");
         //get item_comment_authenticity_token
         comment_token = extractAttribute(resp, 0, "id=\"item_comment_authenticity_token\" value=\"", "\" />");
     }
-    
+
     public static String createCookie(String cookieID) {
         HttpCookie httpCookie = new HttpCookie("_fril_user_session", cookieID);
         //httpCookie.setDomain("fril.jp");
@@ -235,7 +237,7 @@ public class Utility {
                 cookieList = listCookie.split(";"); //split cookie by ; (example: asd=afsdf;domain=...)
                 cookieSplit = cookieList[0].split("="); //example: split asd=afsdf by =
                 if ("_fril_user_session".equals(cookieSplit[0])) {
-                    cookie_static = cookieSplit[1].replaceAll("\"", "");                
+                    cookie_static = cookieSplit[1].replaceAll("\"", "");
                 }
             }
         }
@@ -247,22 +249,21 @@ public class Utility {
                 Settings.cookie = cookie_static;
             }
             gCookieID = cookie_static;
-            
+
 //            JFrame topFrame = (JFrame) frmLogin.getRootPane().getParent();
 //            topFrame.dispose();
-            
             ListItems listItems = new ListItems();
             listItems.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             listItems.pack();
-            listItems.setVisible(true); 
-            
+            listItems.setVisible(true);
+
             bResult = true;
         }
         //gCookie = cookie; cookie to addaccount
         getProducts("https://fril.jp/ajax/item/selling");
         return bResult;
     }
-    
+
 //    public static String getCsrkToken(String formUrl) throws MalformedURLException, IOException{
 //        URL url = new URL(formUrl);
 //        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
@@ -288,8 +289,8 @@ public class Utility {
         req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
         req.setRequestProperty("Accept", "*/*");
         req.setRequestProperty("Cookie", gCookieID);
-        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");        
-        
+        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         String inputLine;
         StringBuilder stringBuilder = new StringBuilder();
@@ -298,7 +299,7 @@ public class Utility {
             stringBuilder.append(inputLine);
         }
         resp = stringBuilder.toString();
-        
+
         String[] tmp = resp.split("\'");
         for (String str : tmp) {
             if (str.startsWith("<div class")) {
@@ -321,7 +322,7 @@ public class Utility {
         }
         return listItem;
     }
-    
+
     public static String extractAttribute(String strHtml, int idx, String strStart, String strStop) {
         String strHref;
         try {
@@ -330,6 +331,24 @@ public class Utility {
             strHref = strHtml.substring(idxStart, idxStop);
         } catch (Exception e) {
             return "";
+        }
+        return strHref;
+    }
+
+    private static String extractAttribute2(String strHtml, int idx, String strStart, String strStop) {
+        String strHref = "";
+        if (strHtml.indexOf(strStart, idx) >= 0) {
+            try {
+                int idxStart = strHtml.indexOf(strStart, idx) + strStart.length();
+                int idxStop = strHtml.indexOf(strStop, idxStart);
+                strHref = strHtml.substring(idxStart, idxStop);
+                nIdxFound = idxStart;
+            } catch (Exception e) {
+                return "";
+            }
+        }
+        else{
+            nIdxFound = -1;
         }
         return strHref;
     }
@@ -385,11 +404,11 @@ public class Utility {
     static void deleteItem(String strLink) throws IOException {
         Utility.getTokenToDeleteItem("https://fril.jp/sell");
         String[] strTmp = strLink.split("/");
-        String strLink2 = "https://fril.jp/item/" + strTmp[strTmp.length -1 ];
-        
+        String strLink2 = "https://fril.jp/item/" + strTmp[strTmp.length - 1];
+
         String formUrl = strLink2; // @"https://fril.jp/item/75371faa081354d19098b338bc7f7ed8";
         String formParams = "_method=delete&authenticity_token=" + URLEncoder.encode(token, "UTF-8");
-        
+
         URL url = new URL(formUrl);
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -398,7 +417,7 @@ public class Utility {
         req.setRequestMethod("POST");
         req.setRequestProperty("Referer", "https://fril.jp/sell");
         req.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-        
+
         byte[] bytes = formParams.getBytes(StandardCharsets.US_ASCII);
         req.setRequestProperty("Content-Length", String.valueOf(bytes.length));
         //Send POST request
@@ -408,10 +427,48 @@ public class Utility {
             wr.flush();
             wr.close();
         }
-        
     }
 
-    static EditInfo getEditInfo(String selectedValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static EditInfo getEditInfo(String strLink) throws MalformedURLException, IOException {
+        EditInfo editInfo = new EditInfo();
+        editInfo.imageLinkList = new ArrayList<String>();
+
+        String[] strTmp = strLink.split("/");
+
+        String formUrl = "https://fril.jp/item/" + strTmp[strTmp.length - 1] + "/edit";
+
+        URL url = new URL(formUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
+        req.setRequestProperty("Cookie", Utility.gCookieID);
+        req.setRequestMethod("GET");
+        req.addRequestProperty("X-Requested-With", "XMLHttpRequest");
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        String inputLine;
+        StringBuilder stringBuilder = new StringBuilder();
+        String resp;
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        resp = stringBuilder.toString();
+
+        String strContent = "";
+        do {
+            //change Utility.nIdxFound
+            strContent = Utility.extractAttribute2(resp, nIdxFound + 1, "<img class=\"original-img\" style=\"display:none;\" src=\"", "\" alt=\"");
+            if(nIdxFound >= 0){
+                editInfo.imageLinkList.add(strContent);
+            }
+        } while (nIdxFound > 0);
+        
+        strContent = Utility.extractAttribute2(resp, 0, "<div data-react-class=\"ItemContent\" data-react-props=\"{&quot;item&quot;:", "}\"></div>");
+        String strUrlDecode = URLDecoder.decode(strContent, "UTF-8");
+        
+        ObjectMapper mapper = new ObjectMapper();
+        editInfo.editItemInfo = mapper.readValue(strUrlDecode, new TypeReference<ListItems.EditItemInfo>() {});
+        
+        return editInfo;
     }
+
 }

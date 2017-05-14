@@ -99,16 +99,21 @@ public class ListItems extends javax.swing.JFrame {
                 } else if (jTable_exhibition.getSelectedColumn() == 4) { //modify item
                     String selectedValue;
                     selectedValue = jTable_exhibition.getValueAt(selectedRow, 1).toString();
-                    EditInfo editedInfo = Utility.getEditInfo(selectedValue);
-                    editedInfo.strHref = "" + selectedValue;
-                    AddNewItem frmAddNewItem;
+                    EditInfo editedInfo;
                     try {
-                        frmAddNewItem = new AddNewItem();
-                        frmAddNewItem.SetFormListItems(ListItems.this);
-                        frmAddNewItem.SetEditedProductInfo(editedInfo);
-                        frmAddNewItem.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        frmAddNewItem.pack();
-                        frmAddNewItem.setVisible(true);
+                        editedInfo = Utility.getEditInfo(selectedValue);
+                        editedInfo.strHref = "" + selectedValue;
+                        AddNewItem frmAddNewItem;
+                        try {
+                            frmAddNewItem = new AddNewItem();
+                            frmAddNewItem.SetFormListItems(ListItems.this);
+                            frmAddNewItem.SetEditedProductInfo(editedInfo);
+                            frmAddNewItem.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                            frmAddNewItem.pack();
+                            frmAddNewItem.setVisible(true);
+                        } catch (IOException ex) {
+                            Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } catch (IOException ex) {
                         Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -313,7 +318,7 @@ public class ListItems extends javax.swing.JFrame {
             frmAddNewItem.SetFormListItems(this);
             frmAddNewItem.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             frmAddNewItem.pack();
-            
+
             frmAddNewItem.setVisible(true);
         } catch (IOException ex) {
             Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
@@ -494,9 +499,9 @@ public class ListItems extends javax.swing.JFrame {
         }
 
     }
-    
-    public class EditItemInfo
-    {
+
+    public class EditItemInfo {
+
         public int id;
         public int user_id;
         public String name;
@@ -731,12 +736,16 @@ public class ListItems extends javax.swing.JFrame {
         public void setRequest_required(String request_required) {
             this.request_required = request_required;
         }
-        
+
     }
-    
-    public class EditInfo {
+
+    public static class EditInfo {
+
         public EditItemInfo editItemInfo;
         public List<String> imageLinkList;
         public String strHref;
+
+        public EditInfo() {
+        }
     }
 }
