@@ -936,7 +936,12 @@ public class AddNewItem extends javax.swing.JFrame {
         }
 
         formData.add(new AbstractMap.SimpleEntry<>("item[category_id]", cmbCategoryChild2.getSelectedItem().toString()));
-        formData.add(new AbstractMap.SimpleEntry<>("item[size_id]", cmbSize.getSelectedItem().toString()));
+        if(cmbSize.getSelectedItem() == null){
+            formData.add(new AbstractMap.SimpleEntry<>("item[size_id]", ""));
+        }
+        else{
+            formData.add(new AbstractMap.SimpleEntry<>("item[size_id]", cmbSize.getSelectedItem().toString()));
+        }
 
         formData.add(new AbstractMap.SimpleEntry<>("item[brand_id]", null));
         formData.add(new AbstractMap.SimpleEntry<>("item[status]", cmbStateOfComodity.getSelectedItem().toString()));
@@ -1007,11 +1012,12 @@ public class AddNewItem extends javax.swing.JFrame {
                 byte[] headerbytes = header.getBytes("UTF-8");
 
                 memStream.write(headerbytes, 0, headerbytes.length);
-
-                FileInputStream fileStream = new FileInputStream(file);
+                
+                String path = "C:\\Users\\CuongPhan\\Pictures\\" + file;
+                FileInputStream fileStream = new FileInputStream(path);
                 byte[] buffer = new byte[1024];
                 int bytesRead = 0;
-                while ((bytesRead = fileStream.read(buffer, 0, buffer.length)) != 0) {
+                while ((bytesRead = fileStream.read(buffer, 0, buffer.length)) != -1) {
                     memStream.write(buffer, 0, bytesRead);
                 }
             }
@@ -1108,7 +1114,7 @@ public class AddNewItem extends javax.swing.JFrame {
 
         int nIdxStart = resp.indexOf("csrf-token");
         int nIdxEnd = resp.indexOf("/>", nIdxStart);
-        String strTmp = resp.substring(nIdxStart, nIdxEnd - nIdxStart - 1);
+        String strTmp = resp.substring(nIdxStart, nIdxEnd); 
         String[] tmp = strTmp.split("\\\"");
         if (tmp.length >= 3) {
             token = tmp[2]; //get token
@@ -1138,7 +1144,7 @@ public class AddNewItem extends javax.swing.JFrame {
 
         int nIdxStart = resp.indexOf("csrf-token");
         int nIdxEnd = resp.indexOf("/>", nIdxStart);
-        String strTmp = resp.substring(nIdxStart, nIdxEnd - nIdxStart - 1);
+        String strTmp = resp.substring(nIdxStart, nIdxEnd);
         String[] tmp = strTmp.split("\\\"");
         if (tmp.length >= 3) {
             authenticationToken = tmp[2]; //get authentication token
