@@ -29,6 +29,7 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -81,7 +82,10 @@ public class ListItems extends javax.swing.JFrame {
             }
         };
 
-        jTable_exhibition.setModel(defaultTableModelExhibition);
+        jTable_exhibition.setModel(defaultTableModelExhibition);            
+        //TableColumn columnDeleted = jTable_exhibition.getColumnModel().getColumn(1);
+        //jTable_exhibition.removeColumn(columnDeleted);
+        jTable_exhibition.getColumnModel().getColumn(1).setMaxWidth(0);
         jTable_exhibition.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -500,7 +504,7 @@ public class ListItems extends javax.swing.JFrame {
 
     }
 
-    public class EditItemInfo {
+    public static class EditItemInfo {
 
         public int id;
         public int user_id;
@@ -528,6 +532,9 @@ public class ListItems extends javax.swing.JFrame {
         public String brand_name;
         public List<Object> related_size_group_ids;
         public String request_required;
+
+        public EditItemInfo() {
+        }
 
         public int getId() {
             return id;

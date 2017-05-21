@@ -33,6 +33,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -463,9 +464,11 @@ public class Utility {
         } while (nIdxFound > 0);
         
         strContent = Utility.extractAttribute2(resp, 0, "<div data-react-class=\"ItemContent\" data-react-props=\"{&quot;item&quot;:", "}\"></div>");
-        String strUrlDecode = URLDecoder.decode(strContent, "UTF-8");
+        String strUrlDecode = URLDecoder.decode(strContent, "US_ASCII");
         
         ObjectMapper mapper = new ObjectMapper();
+        //mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        strUrlDecode = strUrlDecode.replace("&quot;", "\"");
         editInfo.editItemInfo = mapper.readValue(strUrlDecode, new TypeReference<ListItems.EditItemInfo>() {});
         
         return editInfo;
