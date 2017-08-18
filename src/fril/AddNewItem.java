@@ -24,6 +24,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -54,6 +56,14 @@ public class AddNewItem extends javax.swing.JFrame {
     private static String token = "";
     private static String cookieID = "";
     private static String authenticationToken = "";
+    List<CmbItem> lstCmbItemChild2;
+    List<CmbItem> lstStateOfComodity;
+    List<CmbItem> lstShippingChangeOfBuden;
+    List<CmbItem> lstShippingMethod;
+    List<CmbItem> lstEstimatedShippingTime;
+    List<CmbItem> lstShippingPlace;
+    List<CmbItem> lstPurchaseApplication;
+    List<CmbItem> lstCmbSize;
 
 //    public static void main(String[] args ){
 //        AddNewItem frmAddNewItem = new AddNewItem();
@@ -552,11 +562,11 @@ public class AddNewItem extends javax.swing.JFrame {
             int childSelectedIndex = cmbCategoryChild.getSelectedIndex();
             if (selectedIndex >= 0 && childSelectedIndex >= 0) {
                 cmbCategoryChild2.removeAllItems();
-                List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
+                lstCmbItemChild2 = new ArrayList<>();
                 for (Child2 categoryChild2 : lstCategory.get(selectedIndex).children.get(childSelectedIndex).children) {
-                    lstCmbItem.add(new CmbItem(categoryChild2.name, "" + categoryChild2.id));
+                    lstCmbItemChild2.add(new CmbItem(categoryChild2.name, "" + categoryChild2.id));
                 }
-                for (CmbItem item : lstCmbItem) {
+                for (CmbItem item : lstCmbItemChild2) {
                     cmbCategoryChild2.addItem(item.getText());
                 }
             }
@@ -652,11 +662,11 @@ public class AddNewItem extends javax.swing.JFrame {
                     int nIdxSize = -1;
                     nIdxSize = Integer.valueOf(lstSizes.get(0).toString());
 
-                    List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
+                    lstCmbSize = new ArrayList<>();
                     for (Size size : lstSize.get(nIdxSize - 1).sizes) {
-                        lstCmbItem.add(new CmbItem(size.name, String.valueOf(size.id)));
+                        lstCmbSize.add(new CmbItem(size.name, String.valueOf(size.id)));
                     }
-                    for (CmbItem item : lstCmbItem) {
+                    for (CmbItem item : lstCmbSize) {
                         cmbSize.addItem(item.getText());
                     }
                 }
@@ -778,7 +788,7 @@ public class AddNewItem extends javax.swing.JFrame {
         lstCategory = getCategory();
         if (lstCategory != null) {
             cmbCategories.setSelectedItem("Text");
-            List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
+            List<CmbItem> lstCmbItem = new ArrayList<>();
             for (int i = 0; i < lstCategory.size(); i++) {
                 lstCmbItem.add(new CmbItem(lstCategory.get(i).name, "" + lstCategory.get(i).id));
             }
@@ -788,7 +798,7 @@ public class AddNewItem extends javax.swing.JFrame {
             }
         }
         cmbStateOfComodity.setSelectedItem("Text");
-        List<CmbItem> lstStateOfComodity = new ArrayList<CmbItem>();
+        lstStateOfComodity = new ArrayList<>();
         lstStateOfComodity.add(new CmbItem("新品, 未使用", "5"));
         lstStateOfComodity.add(new CmbItem("未使用に近い", "4"));
         lstStateOfComodity.add(new CmbItem("目立った傷や汚れなし", "6"));
@@ -800,7 +810,7 @@ public class AddNewItem extends javax.swing.JFrame {
         }
 
         //cmb ShippingChangeOfBuden
-        List<CmbItem> lstShippingChangeOfBuden = new ArrayList<CmbItem>();
+        lstShippingChangeOfBuden = new ArrayList<>();
         lstShippingChangeOfBuden.add(new CmbItem("送料込み（出品者が負担)", "1"));
         lstShippingChangeOfBuden.add(new CmbItem("着払い（購入者が負担)", "2"));
         for (CmbItem shippingChangeOfBuden : lstShippingChangeOfBuden) {
@@ -808,7 +818,7 @@ public class AddNewItem extends javax.swing.JFrame {
         }
 
         //cmb ShippingMethod
-        List<CmbItem> lstShippingMethod = new ArrayList<CmbItem>();
+        lstShippingMethod = new ArrayList<>();
         lstShippingMethod.add(new CmbItem("未定", "9"));
         lstShippingMethod.add(new CmbItem("ゆうパック着払い", "8"));
         lstShippingMethod.add(new CmbItem("ヤマト宅急便", "6"));
@@ -819,7 +829,7 @@ public class AddNewItem extends javax.swing.JFrame {
         }
 
         //cmb EstimatedShippingTime
-        List<CmbItem> lstEstimatedShippingTime = new ArrayList<CmbItem>();
+        lstEstimatedShippingTime = new ArrayList<>();
         lstEstimatedShippingTime.add(new CmbItem("支払い後、1～2日で発送", "1"));
         lstEstimatedShippingTime.add(new CmbItem("支払い後、2～3日で発送", "2"));
         lstEstimatedShippingTime.add(new CmbItem("支払い後、4～7日で発送", "3"));
@@ -828,8 +838,9 @@ public class AddNewItem extends javax.swing.JFrame {
         }
 
         //cmb ShippingPlace
-        List<CmbItem> lstShippingPlace = new ArrayList<CmbItem>();
-        lstShippingPlace.add(new CmbItem("支払い後、1～2日で発送", "1"));
+        lstShippingPlace = new ArrayList<>();
+        lstShippingPlace.add(new CmbItem("北海道", "1"));
+        lstShippingPlace.add(new CmbItem("青森県", "2"));
         lstShippingPlace.add(new CmbItem("岩手県", "3"));
         lstShippingPlace.add(new CmbItem("宮城県", "4"));
         lstShippingPlace.add(new CmbItem("秋田県", "5"));
@@ -879,7 +890,7 @@ public class AddNewItem extends javax.swing.JFrame {
         }
 
         //cmb PurchaseApplication
-        List<CmbItem> lstPurchaseApplication = new ArrayList<CmbItem>();
+        lstPurchaseApplication = new ArrayList<>();
         lstPurchaseApplication.add(new CmbItem("なし", "0"));
         lstPurchaseApplication.add(new CmbItem("あり", "1"));
         for (CmbItem purchaseApplication : lstPurchaseApplication) {
@@ -893,7 +904,7 @@ public class AddNewItem extends javax.swing.JFrame {
         //2. Go to item/new
         getCookieIdandAuthenticationtoken("https://fril.jp/item/new");
         //3. Post to item
-        String formUrl = "";
+        String formUrl;
         List<Map.Entry<String, String>> formData = new ArrayList<>();
         formData.add(new AbstractMap.SimpleEntry<>("utf8", "✓"));
         if (editInfo != null) {
@@ -906,7 +917,7 @@ public class AddNewItem extends javax.swing.JFrame {
         }
 
         formData.add(new AbstractMap.SimpleEntry<>("authenticity_token", authenticationToken));
-        String[] strID = {null, null, null, null};
+        String[] strID = {"", "", "", ""};
         for (int idx = 0; idx < 4; idx++) {
             strID[idx] = getImageID(imgLinks[idx]);
         }
@@ -917,7 +928,7 @@ public class AddNewItem extends javax.swing.JFrame {
                 for (int idx = 0; idx < lstIDImg2Delete.size(); idx++) {
                     if (lstIDImg2Delete.get(idx).equals(strID[i])) {
                         formData.remove("item_img_ids[] " + i);
-                        formData.add(new AbstractMap.SimpleEntry<>("item_img_ids[] " + i, null));
+                        formData.add(new AbstractMap.SimpleEntry<>("item_img_ids[] " + i, ""));
                     }
                 }
             }
@@ -926,29 +937,30 @@ public class AddNewItem extends javax.swing.JFrame {
                 formData.add(new AbstractMap.SimpleEntry<>("updates[] " + i, "1"));
                 formData.add(new AbstractMap.SimpleEntry<>("set_images[] " + i, "1"));
             } else {
-                formData.add(new AbstractMap.SimpleEntry<>("updates[] " + i, null));
-                formData.add(new AbstractMap.SimpleEntry<>("set_images[] " + i, null));
+                formData.add(new AbstractMap.SimpleEntry<>("updates[] " + i, ""));
+                formData.add(new AbstractMap.SimpleEntry<>("set_images[] " + i, ""));
             }
-            formData.add(new AbstractMap.SimpleEntry<>("crop_x[] " + i, null));
-            formData.add(new AbstractMap.SimpleEntry<>("crop_y[] " + i, null));
-            formData.add(new AbstractMap.SimpleEntry<>("crop_size[] " + i, null));
-            formData.add(new AbstractMap.SimpleEntry<>("image_tmp " + i, null));
+            formData.add(new AbstractMap.SimpleEntry<>("crop_x[] " + i, ""));
+            formData.add(new AbstractMap.SimpleEntry<>("crop_y[] " + i, ""));
+            formData.add(new AbstractMap.SimpleEntry<>("crop_size[] " + i, ""));
+            formData.add(new AbstractMap.SimpleEntry<>("image_tmp " + i, ""));
         }
-
-        formData.add(new AbstractMap.SimpleEntry<>("item[category_id]", cmbCategoryChild2.getSelectedItem().toString()));
+//        JList list = new JList(cmbCategoryChild2.getModel());        
+//        String value = ((CmbItem)list.getModel().getElementAt(cmbCategoryChild2.getSelectedIndex())).getValue();
+        formData.add(new AbstractMap.SimpleEntry<>("item[category_id]", lstCmbItemChild2.get(cmbCategoryChild2.getSelectedIndex()).getValue()));
         if(cmbSize.getSelectedItem() == null){
             formData.add(new AbstractMap.SimpleEntry<>("item[size_id]", ""));
         }
         else{
-            formData.add(new AbstractMap.SimpleEntry<>("item[size_id]", cmbSize.getSelectedItem().toString()));
+            formData.add(new AbstractMap.SimpleEntry<>("item[size_id]", lstCmbSize.get(cmbSize.getSelectedIndex()).getValue()));
         }
-
-        formData.add(new AbstractMap.SimpleEntry<>("item[brand_id]", null));
-        formData.add(new AbstractMap.SimpleEntry<>("item[status]", cmbStateOfComodity.getSelectedItem().toString()));
-        formData.add(new AbstractMap.SimpleEntry<>("item[carriage]", cmbShippingChangeOfBuden.getSelectedItem().toString()));
-        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_method]", cmbShippingMethod.getSelectedItem().toString()));
-        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_date]", cmbEstimatedDateOfShipment.getSelectedItem().toString()));
-        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_area]", cmbShippingPlace.getSelectedItem().toString()));
+      
+        formData.add(new AbstractMap.SimpleEntry<>("item[brand_id]", ""));
+        formData.add(new AbstractMap.SimpleEntry<>("item[status]", lstStateOfComodity.get(cmbStateOfComodity.getSelectedIndex()).getValue()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[carriage]", lstShippingChangeOfBuden.get(cmbShippingChangeOfBuden.getSelectedIndex()).getValue()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_method]", lstShippingMethod.get(cmbShippingMethod.getSelectedIndex()).getValue()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_date]", lstEstimatedShippingTime.get(cmbEstimatedDateOfShipment.getSelectedIndex()).getValue()));
+        formData.add(new AbstractMap.SimpleEntry<>("item[delivery_area]", lstShippingPlace.get(cmbShippingPlace.getSelectedIndex()).getValue()));
 
         formData.add(new AbstractMap.SimpleEntry<>("item[request_required]", "0"));
         formData.add(new AbstractMap.SimpleEntry<>("item[name]", tfProductName.getText()));
@@ -971,10 +983,13 @@ public class AddNewItem extends javax.swing.JFrame {
         }
     }
 
-    private String uploadFilesToRemoteUrl(String formUrl, String[] files, String cookieID, List<Map.Entry<String, String>> formFields) throws UnsupportedEncodingException, MalformedURLException, IOException {
+    private String uploadFilesToRemoteUrl(String formUrl, String[] files, String cookieID, List<Map.Entry<String, String>> formData) throws UnsupportedEncodingException, MalformedURLException, IOException {
         Date now = new Date();
         //convert now to hexadecimal
-        String boundary = "----WebKitFormBoundary" + String.format("%040x", new BigInteger(1, now.toString().getBytes("UTF-16")));
+        Calendar cal = Calendar.getInstance();
+        //String boundary = "----WebKitFormBoundary" + String.format("%040x", new BigInteger(1, now.toString().getBytes("UTF-16")));
+        String boundary = "----WebKitFormBoundary" + Long.toHexString(cal.getTime().getTime());
+        
         URL url = new URL(formUrl);
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("POST");
@@ -982,15 +997,22 @@ public class AddNewItem extends javax.swing.JFrame {
         req.setRequestProperty("Connection", "keep-alive");
         req.setInstanceFollowRedirects(false);
         req.setRequestProperty("Cookie", cookieID);
-
+        req.setRequestProperty("Referer", "https://fril.jp/item/new");
+        req.setRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
+        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+        
+//        for (Map.Entry<String, String> formField : formData){
+//            req.setRequestProperty("Content-Disposition: form-data; name=\"" + formField.getKey() + "\"", );
+//        }
+                
         ByteArrayOutputStream memStream = new ByteArrayOutputStream();
         byte[] boundarybytes = ("\r\n--" + boundary + "\r\n").getBytes(StandardCharsets.US_ASCII);
         byte[] endBoundaryBytes = ("\r\n--" + boundary + "--").getBytes(StandardCharsets.US_ASCII);
 
         String formdataTemplate = "\r\n--" + boundary + "\r\nContent-Disposition: form-data; name=\"%s\";\r\n\r\n%s";
-        if (formFields != null) {
-            for (Map.Entry<String, String> formField : formFields) {
-                String formitem = "";
+        if (formData != null) {
+            for (Map.Entry<String, String> formField : formData) {
+                String formitem;
                 String[] tmp = formField.getKey().split(" ");
                 String key = tmp[0];
                 if ("image_tmp".equals(key)) {
@@ -1012,17 +1034,17 @@ public class AddNewItem extends javax.swing.JFrame {
                 byte[] headerbytes = header.getBytes("UTF-8");
 
                 memStream.write(headerbytes, 0, headerbytes.length);
-                
-                String path = "C:\\Users\\CuongPhan\\Pictures\\" + file;
+                //TODO change to appropriate with every computer
+                String path = "C:\\Users\\Admin\\Pictures\\" + file;
                 FileInputStream fileStream = new FileInputStream(path);
                 byte[] buffer = new byte[1024];
-                int bytesRead = 0;
+                int bytesRead;
                 while ((bytesRead = fileStream.read(buffer, 0, buffer.length)) != -1) {
                     memStream.write(buffer, 0, bytesRead);
                 }
             }
         }
-
+        
         memStream.write(endBoundaryBytes, 0, endBoundaryBytes.length);
         req.setRequestProperty("Content-Length", String.valueOf(memStream.size()));
         req.setDoOutput(true);
@@ -1036,7 +1058,7 @@ public class AddNewItem extends javax.swing.JFrame {
         }
         StringBuilder stringBuilder = new StringBuilder();
         String inputLine;
-        String resp = "";
+        String resp;
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         while ((inputLine = bufferedReader.readLine()) != null) {
             stringBuilder.append(inputLine);
@@ -1100,8 +1122,9 @@ public class AddNewItem extends javax.swing.JFrame {
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
-
+        req.setRequestProperty("Cookie", Utility.gCookieID);
+        req.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36");
+        req.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         while ((inputLine = bufferedReader.readLine()) != null) {
             stringBuilder.append(inputLine);
@@ -1110,7 +1133,7 @@ public class AddNewItem extends javax.swing.JFrame {
         String cookie = req.getHeaderField("Set-Cookie");
         String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
         String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
-        cookieID = cookies[1]; //get cookie value
+        cookieID = "_fril_user_session=" + cookies[1]; //get cookie value
 
         int nIdxStart = resp.indexOf("csrf-token");
         int nIdxEnd = resp.indexOf("/>", nIdxStart);
@@ -1130,8 +1153,9 @@ public class AddNewItem extends javax.swing.JFrame {
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
         req.setRequestMethod("GET");
         req.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        req.setRequestProperty("Cookie", createCookie(Utility.gCookieID));
-
+        req.setRequestProperty("Cookie", cookieID);
+        req.setRequestProperty("Referer", "Referer: https://fril.jp/mypage");
+        
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
         while ((inputLine = bufferedReader.readLine()) != null) {
             stringBuilder.append(inputLine);
@@ -1140,7 +1164,7 @@ public class AddNewItem extends javax.swing.JFrame {
         String cookie = req.getHeaderField("Set-Cookie");
         String[] cookieSplit = cookie.split(";"); //splits cookie by ; (example: asd=afsdf;domain=...)
         String[] cookies = cookieSplit[0].split("="); //example: splits asd=afsdf by =
-        cookieID = cookies[1]; //get cookie value
+        cookieID = "_fril_user_session=" + cookies[1]; //get cookie value
 
         int nIdxStart = resp.indexOf("csrf-token");
         int nIdxEnd = resp.indexOf("/>", nIdxStart);
@@ -1152,7 +1176,7 @@ public class AddNewItem extends javax.swing.JFrame {
     }
 
     private List<Sizes> getSizes() throws MalformedURLException, IOException {
-        List<ItemShortInfo> lstItem = new ArrayList<ItemShortInfo>();
+        List<ItemShortInfo> lstItem = new ArrayList<>();
         String frmUrl = "https://fril.jp/ajax/size";
         URL url = new URL(frmUrl);
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
@@ -1203,7 +1227,7 @@ public class AddNewItem extends javax.swing.JFrame {
     }
 
     private String getImageID(String imgLink) {
-        String strIdImg = null;
+        String strIdImg = "";
         if (imgLink != null && imgLink.contains("/original/")) {
             String strImagePath = Utility.extractAttribute(imgLink, 0, "/original/", ".");
             strIdImg = strImagePath;

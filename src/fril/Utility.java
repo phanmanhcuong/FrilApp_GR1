@@ -217,7 +217,7 @@ public class Utility {
         //req.setRequestProperty("Cookie", "_fril_user_session=aG01M09yU09iRGNYb2RFSmZZNnNRME5NTDdWb3Vib3oxSmJOdTlneFZqanplREplR0p6amFqaGxobFlIdU9udU9jdjRqME94dnhOY3lHcmE1Z0R1RUNBNGdsODQ1VEdyK2xhcEdnQ21uTkdlRzE2MFl4d1FheUFML3AyZ1gvSVBWUkcyOUd6eER3RjF5aUFKQktvT2owbGp1T2VDZ1VEdVVKV1kwckRVVnVza3RpbFc2QmJQeTR6NUZpT2JYZWZiVlZwZ2JmeStkUGdYRjZEQmdFS0dBblNveVhpWXcwdlhlNUZRd1hnTE11SlErZllRSGxFTkFrb2xzbkFiK2pLSlJkWkVCemJIdGp3ejlJdyt5ZDBlOGtYTzlIM2VnSEt2Vm05eFFsNDNDSVR4RU1UZWN1ZGx4ZE1hM1BINm1FR1NmTTA5eGFzU2JCZ0hOWE9RR2NHMXpIU2t4OXBUUGFFZEpkcjA4RCs0RnpzbkJIdkh6aEN2U1FWb0RiZFc0YVl0LS12Wks1UmNJdVRHblpsQXg2SWlKUzFBPT0%3D--e1957d2401b1df72d1e239c2eb07e200e8726e08");
         req.setInstanceFollowRedirects(false);
         req.setRequestMethod("POST");
-        req.setRequestProperty("Referer", "https://fril.jp/users/sign_in");
+        //req.setRequestProperty("Referer", "https://fril.jp/users/sign_in");
 
         byte[] bytes = formParams.getBytes(StandardCharsets.US_ASCII);
         req.setRequestProperty("Content-Length", String.valueOf(bytes.length));
