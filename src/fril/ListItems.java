@@ -29,7 +29,6 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -112,6 +111,7 @@ public class ListItems extends javax.swing.JFrame {
                             frmAddNewItem = new AddNewItem();
                             frmAddNewItem.SetFormListItems(ListItems.this);
                             frmAddNewItem.SetEditedProductInfo(editedInfo);
+                            frmAddNewItem.updateEditedProductInfo();
                             frmAddNewItem.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             frmAddNewItem.pack();
                             frmAddNewItem.setVisible(true);

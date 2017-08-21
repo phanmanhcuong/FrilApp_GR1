@@ -6,7 +6,6 @@
 package fril;
 
 import fril.ListItems.EditInfo;
-import static fril.Utility.createCookie;
 import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -14,27 +13,25 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -52,7 +49,7 @@ public class AddNewItem extends javax.swing.JFrame {
     ListItems frmListItems = null;
     List<Category> lstCategory;
     List<Sizes> lstSize;
-    private List<String> lstIDImg2Delete = new ArrayList<String>();
+    private List<String> lstIDImg2Delete = new ArrayList<>();
     private static String token = "";
     private static String cookieID = "";
     private static String authenticationToken = "";
@@ -81,7 +78,7 @@ public class AddNewItem extends javax.swing.JFrame {
         initComponents();
         lstSize = getSizes();
         initializeComboboxes();
-        updateEditedProductInfo();
+        //updateEditedProductInfo();
     }
 
     /**
@@ -350,7 +347,7 @@ public class AddNewItem extends javax.swing.JFrame {
                                         .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(lbPicture1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(lbPicture1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGroup(layout.createSequentialGroup()
                                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                         .addComponent(jLabel12)
@@ -448,11 +445,10 @@ public class AddNewItem extends javax.swing.JFrame {
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbPicture1, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(lbPicture2, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                        .addComponent(lbPicture3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbPicture4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(lbPicture1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbPicture2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbPicture3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbPicture4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit1)
@@ -1008,7 +1004,6 @@ public class AddNewItem extends javax.swing.JFrame {
         ByteArrayOutputStream memStream = new ByteArrayOutputStream();
         byte[] boundarybytes = ("\r\n--" + boundary + "\r\n").getBytes(StandardCharsets.US_ASCII);
         byte[] endBoundaryBytes = ("\r\n--" + boundary + "--").getBytes(StandardCharsets.US_ASCII);
-
         String formdataTemplate = "\r\n--" + boundary + "\r\nContent-Disposition: form-data; name=\"%s\";\r\n\r\n%s";
         if (formData != null) {
             for (Map.Entry<String, String> formField : formData) {
@@ -1056,6 +1051,7 @@ public class AddNewItem extends javax.swing.JFrame {
             wr.flush();
             wr.close();
         }
+        
         StringBuilder stringBuilder = new StringBuilder();
         String inputLine;
         String resp;
@@ -1067,14 +1063,18 @@ public class AddNewItem extends javax.swing.JFrame {
         return resp;
     }
 
-    private void updateEditedProductInfo() {
+    public void updateEditedProductInfo() throws MalformedURLException, IOException {
         if (editInfo != null) {
             JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
             int index = 0;
             for (String imgPath : editInfo.imageLinkList) {
                 imgLinks[index] = imgPath;
-                ImageIcon image = new ImageIcon(imgPath);
-                label[index++].setIcon(image);
+                URL url = new URL(imgPath);
+                Image image = ImageIO.read(url);
+                ImageIcon imageIcon = new ImageIcon(image);
+                label[index++].setIcon(imageIcon);
+//                ImageIcon image = new ImageIcon(imgPath);
+//                label[index++].setIcon(image);
             }
             String debugString = "";
             //find categoryID
@@ -1089,23 +1089,50 @@ public class AddNewItem extends javax.swing.JFrame {
                     for (int k = 0; k < lstCategory.get(i).children.get(j).children.size(); k++) {
                         if (lstCategory.get(i).children.get(j).children.get(k).id == editInfo.editItemInfo.category_id) {
                             debugString += " category - child2: " + k + " " + lstCategory.get(i).name;
-                            cmbCategories.setSelectedItem(lstCategory.get(i).id);
-                            cmbCategoryChild2.setSelectedItem(lstCategory.get(i).children.get(j).id);
-                            cmbCategoryChild2.setSelectedItem(lstCategory.get(i).children.get(j).children.get(k).id);
+                            cmbCategories.setSelectedIndex(i);
+                            cmbCategoryChild.setSelectedIndex(j);
+                            cmbCategoryChild2.setSelectedIndex(k);
                             break;
                         }
                     }
                 }
             }
-
-            cmbSize.setSelectedItem(editInfo.editItemInfo.size_id);
+            for(int i = 0; i < lstCmbSize.size(); i++){
+                if(lstCmbSize.get(i).Value.equals(editInfo.editItemInfo.size_id)){
+                    cmbSize.setSelectedIndex(i);
+                }
+            }
             tfBrand.setText(editInfo.editItemInfo.brand_name);
-            cmbStateOfComodity.setSelectedItem(editInfo.editItemInfo.status);
-            cmbShippingChangeOfBuden.setSelectedItem(editInfo.editItemInfo.carriage);
-            cmbShippingMethod.setSelectedItem(editInfo.editItemInfo.delivery_method);
-            cmbShippingPlace.setSelectedItem(editInfo.editItemInfo.delivery_area);
-            cmbEstimatedDateOfShipment.setSelectedItem(editInfo.editItemInfo.delivery_date);
-
+            for(int i = 0; i < lstStateOfComodity.size(); i++){
+                if(Integer.parseInt(lstStateOfComodity.get(i).Value) == (editInfo.editItemInfo.status)){
+                    cmbStateOfComodity.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstShippingChangeOfBuden.size(); i++){
+                if(Integer.parseInt(lstShippingChangeOfBuden.get(i).Value) == (editInfo.editItemInfo.carriage)){
+                    cmbShippingChangeOfBuden.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstShippingMethod.size(); i++){
+                if(Integer.parseInt(lstShippingMethod.get(i).Value) == (editInfo.editItemInfo.delivery_method)){
+                    cmbShippingMethod.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstShippingPlace.size(); i++){
+                if(Integer.parseInt(lstShippingPlace.get(i).Value) == (editInfo.editItemInfo.delivery_area)){
+                    cmbShippingPlace.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstEstimatedShippingTime.size(); i++){
+                if(Integer.parseInt(lstEstimatedShippingTime.get(i).Value) == (editInfo.editItemInfo.delivery_date)){
+                    cmbEstimatedDateOfShipment.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstPurchaseApplication.size(); i++){
+                if(lstPurchaseApplication.get(i).Value.equals(editInfo.editItemInfo.request_required)){
+                    cmbEstimatedDateOfShipment.setSelectedIndex(i);
+                }
+            }
             cmbPurchaseApplication.setSelectedItem(editInfo.editItemInfo.request_required);
             tfProductName.setText(editInfo.editItemInfo.name);
             taProductDescription.setText(editInfo.editItemInfo.detail);
