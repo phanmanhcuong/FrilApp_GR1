@@ -13,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -1227,7 +1226,7 @@ public class AddNewItem extends javax.swing.JFrame {
         return lstSizes;
     }
 
-    private List<Category> getCategory() throws MalformedURLException, IOException {
+    public static List<Category> getCategory() throws MalformedURLException, IOException {
         String frmUrl = "https://fril.jp/ajax/category";
         URL url = new URL(frmUrl);
         HttpsURLConnection req = (HttpsURLConnection) url.openConnection();

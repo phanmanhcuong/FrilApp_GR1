@@ -40,7 +40,7 @@ public class ListItems extends javax.swing.JFrame {
     //List<UserAccount> lstUserAccount = new List<UserAccount>();
     Timer myTimer = null;
     private static int daysRemain = 0;
-
+    public static List<ItemShortInfo> itemSellingList;
     /**
      * Creates new form ListItems
      *
@@ -103,7 +103,7 @@ public class ListItems extends javax.swing.JFrame {
                     String selectedValue;
                     selectedValue = jTable_exhibition.getValueAt(selectedRow, 1).toString();
                     EditInfo editedInfo;
-                    try {
+                    try {                      
                         editedInfo = Utility.getEditInfo(selectedValue);
                         editedInfo.strHref = "" + selectedValue;
                         AddNewItem frmAddNewItem;
@@ -150,7 +150,8 @@ public class ListItems extends javax.swing.JFrame {
             }
         };
         jTable_trading.setModel(defaultTableModelTrading);
-
+        jTable_trading.getColumnModel().getColumn(1).setMaxWidth(0);
+        
         refreshListView();
         refreshTradingListView();
     }
@@ -332,10 +333,16 @@ public class ListItems extends javax.swing.JFrame {
 
     private void btn_ProductScheduleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_ProductScheduleMouseClicked
         // TODO add your handling code here:
-//        FrmItemManagement formItemManagement = new FrmItemManagement();
-//        formItemManagement.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-//        formItemManagement.pack();
-//        formItemManagement.setVisible(true);
+        FrmItemManagement formItemManagement;
+        try {
+            formItemManagement = new FrmItemManagement();
+            formItemManagement.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            formItemManagement.pack();
+            formItemManagement.setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(ListItems.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_btn_ProductScheduleMouseClicked
 
     /**
@@ -367,7 +374,6 @@ public class ListItems extends javax.swing.JFrame {
         }
         List<ItemShortInfo> itemList = Utility.getProducts("https://fril.jp/ajax/item/trading");
         for (int i = 0; i < itemList.size(); i++) {
-
             URL url = new URL(itemList.get(i).strImageLink);
             HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
             req.setRequestMethod("GET");
@@ -414,6 +420,28 @@ public class ListItems extends javax.swing.JFrame {
             } catch (IOException e) {
 
             }
+            
+            int rowHeight = jTable_trading.getRowHeight();
+            for (int column = 0; column < jTable_trading.getColumnCount() - 1; column++) {
+                TableColumn tableColumn = jTable_trading.getColumnModel().getColumn(column);
+                int preferredWidth = tableColumn.getMinWidth();
+                int maxWidth = tableColumn.getMaxWidth();
+
+                for (int row = 0; row < jTable_trading.getRowCount(); row++) {
+                    TableCellRenderer cellRenderer = jTable_trading.getCellRenderer(row, column);
+                    Component c = jTable_trading.prepareRenderer(cellRenderer, row, column);
+                    int width = c.getPreferredSize().width + jTable_trading.getIntercellSpacing().width;
+                    preferredWidth = Math.max(preferredWidth, width);
+                    rowHeight = Math.max(c.getPreferredSize().height, rowHeight);
+                    //  We've exceeded the maximum width, no need to check other rows
+                    if (preferredWidth >= maxWidth) {
+                        preferredWidth = maxWidth;
+                        break;
+                    }
+                }
+                jTable_trading.setRowHeight(rowHeight);
+                tableColumn.setPreferredWidth(preferredWidth);
+            }
         }
     }
 
@@ -422,21 +450,21 @@ public class ListItems extends javax.swing.JFrame {
         if (null != defaultTableModel) {
             defaultTableModel.setRowCount(0);
         }
-        List<ItemShortInfo> itemList = Utility.getProducts("https://fril.jp/ajax/item/selling");
-        for (int i = 0; i < itemList.size(); i++) {
+        itemSellingList = Utility.getProducts("https://fril.jp/ajax/item/selling");
+        for (int i = 0; i < itemSellingList.size(); i++) {
             //get image
             BufferedImage bufferedImage = null;
             ImageIcon image = null;
             try {
-                bufferedImage = ImageIO.read(new URL(itemList.get(i).strImageLink));
+                bufferedImage = ImageIO.read(new URL(itemSellingList.get(i).strImageLink));
                 image = new ImageIcon(bufferedImage);
                 Image image2 = image.getImage();
                 Image image3 = image2.getScaledInstance(150, 150, Image.SCALE_SMOOTH); //resize image
                 ImageIcon imageicon2 = new ImageIcon(image3);
                 if (null != bufferedImage) {
-                    defaultTableModel.addRow(new Object[]{imageicon2, itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, "Click to edit", "Click to delete"});
+                    defaultTableModel.addRow(new Object[]{imageicon2, itemSellingList.get(i).strHref, itemSellingList.get(i).strMediaHeading, itemSellingList.get(i).strWaiting, "Click to edit", "Click to delete"});
                 } else {
-                    defaultTableModel.addRow(new Object[]{itemList.get(i).strHref, itemList.get(i).strMediaHeading, itemList.get(i).strWaiting, "Click to edit", "Click to delete"});
+                    defaultTableModel.addRow(new Object[]{itemSellingList.get(i).strHref, itemSellingList.get(i).strMediaHeading, itemSellingList.get(i).strWaiting, "Click to edit", "Click to delete"});
                 }
             } catch (IOException e) {
 
