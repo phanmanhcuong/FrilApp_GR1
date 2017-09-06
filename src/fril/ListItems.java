@@ -255,6 +255,11 @@ public class ListItems extends javax.swing.JFrame {
                 btn_ProductScheduleMouseClicked(evt);
             }
         });
+        btn_ProductSchedule.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ProductScheduleActionPerformed(evt);
+            }
+        });
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fril/Images/User-icon.png"))); // NOI18N
         jLabel1.setText("jLabel1");
@@ -344,6 +349,10 @@ public class ListItems extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btn_ProductScheduleMouseClicked
+
+    private void btn_ProductScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ProductScheduleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_ProductScheduleActionPerformed
 
     /**
      * @param args the command line arguments

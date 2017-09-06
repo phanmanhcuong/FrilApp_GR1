@@ -6,13 +6,25 @@
 package fril;
 
 import java.awt.Image;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 /**
  *
@@ -23,6 +35,7 @@ public class FrmItem extends javax.swing.JFrame {
     private String[] imgPaths;
     private String[] imgLinks;
     private List<String> lstIDImg2Delete;
+    private ListItems.EditInfo editInfo = null;
     List<AddNewItem.Sizes> lstSize;
     List<AddNewItem.Category> lstCategory;
     List<AddNewItem.CmbItem> lstCmbItemChild2;
@@ -35,18 +48,21 @@ public class FrmItem extends javax.swing.JFrame {
     List<AddNewItem.CmbItem> lstCmbSize;
     /**
      * Creates new form FrmItem
+     * @param id
      * @throws java.io.IOException
      */
-    public FrmItem() throws IOException {
+//    public FrmItem() throws IOException {
+//        
+//    }
+
+    public FrmItem(String id) throws IOException {
+        itemID = id;
         initComponents();
-        initializeComboboxes();
-        loadDataFromDB();
+        lstSize = getSizes();
+        initializeComboboxes();    
+   
     }
-    
-    void SetItemID(String selectedValue) {
-        itemID = selectedValue;
-    }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -185,7 +201,7 @@ public class FrmItem extends javax.swing.JFrame {
             }
         });
 
-        jButton10.setText("Cancle");
+        jButton10.setText("Cancel");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10btnCancle_Clicked(evt);
@@ -771,7 +787,7 @@ public class FrmItem extends javax.swing.JFrame {
         }
         return strIdImg;
     }
-
+    
     private void initializeComboboxes() throws IOException {
         lstCategory = AddNewItem.getCategory();
         if (lstCategory != null) {
@@ -884,9 +900,209 @@ public class FrmItem extends javax.swing.JFrame {
         for (AddNewItem.CmbItem purchaseApplication : lstPurchaseApplication) {
             cmbPurchaseApplication.addItem(purchaseApplication.getText());
         }
-    }   
+    }  
+    
+    void SetEditedProductInfo(ListItems.EditInfo editedInfo) {
+        this.editInfo = editedInfo;
+    }
+    
+    void loadDataToComboboxes() throws IOException {
+        if(editInfo == null){
+            loadDataFromDB();
+        } else{
+            loadDataFromEditInfo();
+        }
+    }
+    
+    void loadDataFromEditInfo() throws MalformedURLException, IOException {
+        if (editInfo != null) {
+            JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+            int index = 0;
+            for (String imgPath : editInfo.imageLinkList) {
+                imgLinks[index] = imgPath;
+                URL url = new URL(imgPath);
+                Image image = ImageIO.read(url);
+                ImageIcon imageIcon = new ImageIcon(image);
+                label[index++].setIcon(imageIcon);
+//                ImageIcon image = new ImageIcon(imgPath);
+//                label[index++].setIcon(image);
+            }
+            String debugString = "";
+            //find categoryID
+            for (int i = 0; i < lstCategory.size(); i++) {
+                if (lstCategory.get(i).id == editInfo.editItemInfo.category_id) {
+                    debugString = "category: " + i + " " + lstCategory.get(i).name;
+                }
+                for (int j = 0; j < lstCategory.get(i).children.size(); j++) {
+                    if (lstCategory.get(i).children.get(j).id == editInfo.editItemInfo.category_id) {
+                        debugString += " category - child: " + j + " " + lstCategory.get(i).name;
+                    }
+                    for (int k = 0; k < lstCategory.get(i).children.get(j).children.size(); k++) {
+                        if (lstCategory.get(i).children.get(j).children.get(k).id == editInfo.editItemInfo.category_id) {
+                            debugString += " category - child2: " + k + " " + lstCategory.get(i).name;
+                            cmbCategories.setSelectedIndex(i);
+                            cmbCategoryChild.setSelectedIndex(j);
+                            cmbCategoryChild2.setSelectedIndex(k);
+                            break;
+                        }
+                    }
+                }
+            }
+            for(int i = 0; i < lstCmbSize.size(); i++){
+                if(lstCmbSize.get(i).Value.equals(editInfo.editItemInfo.size_id)){
+                    cmbSize.setSelectedIndex(i);
+                }
+            }
+            tfBrand.setText(editInfo.editItemInfo.brand_name);
+            for(int i = 0; i < lstStateOfComodity.size(); i++){
+                if(Integer.parseInt(lstStateOfComodity.get(i).Value) == (editInfo.editItemInfo.status)){
+                    cmbStateOfComodity.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstShippingChangeOfBuden.size(); i++){
+                if(Integer.parseInt(lstShippingChangeOfBuden.get(i).Value) == (editInfo.editItemInfo.carriage)){
+                    cmbShippingChangeOfBuden.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstShippingMethod.size(); i++){
+                if(Integer.parseInt(lstShippingMethod.get(i).Value) == (editInfo.editItemInfo.delivery_method)){
+                    cmbShippingMethod.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstShippingPlace.size(); i++){
+                if(Integer.parseInt(lstShippingPlace.get(i).Value) == (editInfo.editItemInfo.delivery_area)){
+                    cmbShippingPlace.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstEstimatedShippingTime.size(); i++){
+                if(Integer.parseInt(lstEstimatedShippingTime.get(i).Value) == (editInfo.editItemInfo.delivery_date)){
+                    cmbEstimatedDateOfShipment.setSelectedIndex(i);
+                }
+            }
+            for(int i = 0; i < lstPurchaseApplication.size(); i++){
+                if(lstPurchaseApplication.get(i).Value.equals(editInfo.editItemInfo.request_required)){
+                    cmbPurchaseApplication.setSelectedIndex(i);
+                }
+            }
+            cmbPurchaseApplication.setSelectedItem(editInfo.editItemInfo.request_required);
+            tfProductName.setText(editInfo.editItemInfo.name);
+            taProductDescription.setText(editInfo.editItemInfo.detail);
+            tfProductPrize.setText(String.valueOf(editInfo.editItemInfo.sell_price));
+        }
+    }
 
     private void loadDataFromDB() {
         //check if item already exists in db then load
+        SqliteJDBC sqliteJDBC = new SqliteJDBC();
+        ResultSet rs = sqliteJDBC.getItemFromTable(itemID);
+        try {
+            if(rs.first()){
+                //load images
+                JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+                String imagePaths = rs.getString("image_paths");
+                if(imagePaths != null){
+                    String[] strImgLinks = imagePaths.split(",");
+                    int index = 0;
+                    for(String imgPath : strImgLinks){
+                        imgPaths[index] = imgPath;
+                        ImageIcon imageIcon = new ImageIcon(imgPath);
+                        label[index].setIcon(imageIcon);
+                    }
+                }
+                //find categoryID
+                String debugString = "";               
+                for (int i = 0; i < lstCategory.size(); i++) {
+                    if (lstCategory.get(i).id == rs.getInt("category_id")) {
+                        debugString = "category: " + i + " " + lstCategory.get(i).name;
+                    }
+                    for (int j = 0; j < lstCategory.get(i).children.size(); j++) {
+                        if (lstCategory.get(i).children.get(j).id == rs.getInt("category_id")) {
+                            debugString += " category - child: " + j + " " + lstCategory.get(i).name;
+                        }
+                        for (int k = 0; k < lstCategory.get(i).children.get(j).children.size(); k++) {
+                            if (lstCategory.get(i).children.get(j).children.get(k).id == rs.getInt("category_id")) {
+                                debugString += " category - child2: " + k + " " + lstCategory.get(i).name;
+                                cmbCategories.setSelectedIndex(i);
+                                cmbCategoryChild.setSelectedIndex(j);
+                                cmbCategoryChild2.setSelectedIndex(k);
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                for(int i = 0; i < lstCmbSize.size(); i++){
+                    if(lstCmbSize.get(i).Value.equals(rs.getInt("size_id"))){
+                        cmbSize.setSelectedIndex(i);
+                    }
+                }
+                tfBrand.setText(rs.getString("brand_name"));
+                for(int i = 0; i < lstStateOfComodity.size(); i++){
+                    if(Integer.parseInt(lstStateOfComodity.get(i).Value) == (rs.getInt("status"))){
+                        cmbStateOfComodity.setSelectedIndex(i);
+                    }
+                }
+                for(int i = 0; i < lstShippingChangeOfBuden.size(); i++){
+                    if(Integer.parseInt(lstShippingChangeOfBuden.get(i).Value) == (rs.getInt("carriage"))){
+                        cmbShippingChangeOfBuden.setSelectedIndex(i);
+                    }
+                }
+                for(int i = 0; i < lstShippingMethod.size(); i++){
+                    if(Integer.parseInt(lstShippingMethod.get(i).Value) == (rs.getInt("delivery_method"))){
+                        cmbShippingMethod.setSelectedIndex(i);
+                    }
+                }
+                for(int i = 0; i < lstShippingPlace.size(); i++){
+                    if(Integer.parseInt(lstShippingPlace.get(i).Value) == (rs.getInt("delivery_area"))){
+                        cmbShippingPlace.setSelectedIndex(i);
+                    }
+                }
+                for(int i = 0; i < lstEstimatedShippingTime.size(); i++){
+                    if(Integer.parseInt(lstEstimatedShippingTime.get(i).Value) == (rs.getInt("delivery_date"))){
+                        cmbEstimatedDateOfShipment.setSelectedIndex(i);
+                    }
+                }
+                for(int i = 0; i < lstPurchaseApplication.size(); i++){
+                    if(lstPurchaseApplication.get(i).Value.equals(rs.getString("request_required"))){
+                        cmbPurchaseApplication.setSelectedIndex(i);
+                    }
+                }
+                cmbPurchaseApplication.setSelectedItem(rs.getString("request_required"));
+                tfProductName.setText(rs.getString("name"));
+                taProductDescription.setText(rs.getString("detail"));
+                tfProductPrize.setText(String.valueOf(rs.getInt("sell_price")));
+                } else{
+
+                }
+        } catch (SQLException ex) {
+            Logger.getLogger(FrmItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+
+    private List<AddNewItem.Sizes> getSizes() throws MalformedURLException, IOException {
+        List<ItemShortInfo> lstItem = new ArrayList<>();
+        String frmUrl = "https://fril.jp/ajax/size";
+        URL url = new URL(frmUrl);
+        HttpsURLConnection req = (HttpsURLConnection) url.openConnection();
+        req.setRequestMethod("GET");
+        req.setRequestProperty("Content-Type", "text/javascript; charset=utf-8");
+        req.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+
+        String fullPage;
+        String inputLine;
+        StringBuilder stringBuilder = new StringBuilder();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        while ((inputLine = bufferedReader.readLine()) != null) {
+            stringBuilder.append(inputLine);
+        }
+        fullPage = stringBuilder.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        List<AddNewItem.Sizes> lstSizes = mapper.readValue(fullPage, new TypeReference<List<AddNewItem.Sizes>>() {
+        });
+        //the other way to create get mapper.readValue();
+        //List<Sizes> lstSizes = Arrays.asList(mapper.readValue(fullPage, Sizes.class)); 
+        return lstSizes;
+    }
+
+
 }

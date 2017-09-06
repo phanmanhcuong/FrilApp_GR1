@@ -311,7 +311,7 @@ public class AddNewItem extends javax.swing.JFrame {
             }
         });
 
-        jButton10.setText("Cancle");
+        jButton10.setText("Cancel");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancle_Clicked(evt);
@@ -1129,7 +1129,7 @@ public class AddNewItem extends javax.swing.JFrame {
             }
             for(int i = 0; i < lstPurchaseApplication.size(); i++){
                 if(lstPurchaseApplication.get(i).Value.equals(editInfo.editItemInfo.request_required)){
-                    cmbEstimatedDateOfShipment.setSelectedIndex(i);
+                    cmbPurchaseApplication.setSelectedIndex(i);
                 }
             }
             cmbPurchaseApplication.setSelectedItem(editInfo.editItemInfo.request_required);

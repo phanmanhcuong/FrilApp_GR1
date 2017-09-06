@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -66,8 +67,18 @@ public class FrmItemManagement extends javax.swing.JFrame {
                             editedInfo = Utility.getEditInfo(selectedValue);
                             editedInfo.strHref = "" + selectedValue;
                             FrmItem frmItem;
-                            frmItem = new FrmItem();
-                            frmItem.SetItemID(selectedValue);
+                            frmItem = new FrmItem(selectedValue);
+                            //check whether SellingTable's existion, item's existion
+                            SqliteJDBC sqliteJDBC = new SqliteJDBC();
+                            if(sqliteJDBC.checkIfTableAlreadyExists()){
+                                ResultSet rs = sqliteJDBC.getItemFromTable(selectedValue);
+                                if(rs == null){
+                                    frmItem.SetEditedProductInfo(editedInfo);
+                                }
+                            } else{
+                                frmItem.SetEditedProductInfo(editedInfo);
+                            }        
+                            frmItem.loadDataToComboboxes();
                             frmItem.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             frmItem.pack();
                             frmItem.setVisible(true);
