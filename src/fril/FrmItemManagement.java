@@ -151,6 +151,11 @@ public class FrmItemManagement extends javax.swing.JFrame {
 
         btn_StartScheduler.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fril/Images/start.png"))); // NOI18N
         btn_StartScheduler.setText("Start Scheduler");
+        btn_StartScheduler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_StartSchedulerActionPerformed(evt);
+            }
+        });
 
         btn_StopScheduler.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fril/Images/stop.png"))); // NOI18N
         btn_StopScheduler.setText("Stop Scheduler");
@@ -210,6 +215,10 @@ public class FrmItemManagement extends javax.swing.JFrame {
     private void btn_AddNewItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AddNewItem1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btn_AddNewItem1ActionPerformed
+
+    private void btn_StartSchedulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_StartSchedulerActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btn_StartSchedulerActionPerformed
     
     
     /**

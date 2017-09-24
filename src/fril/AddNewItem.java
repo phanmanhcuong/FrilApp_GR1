@@ -32,6 +32,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -75,6 +76,8 @@ public class AddNewItem extends javax.swing.JFrame {
      */
     public AddNewItem() throws IOException {
         initComponents();
+        //jScrollPane1 scrollpanel = new JScrollPane();
+        ///scrollpanel.
         lstSize = getSizes();
         initializeComboboxes();
         //updateEditedProductInfo();
@@ -89,6 +92,42 @@ public class AddNewItem extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        lbPicture2 = new javax.swing.JLabel();
+        lbPicture3 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        lbPicture4 = new javax.swing.JLabel();
+        tfProductPrize = new javax.swing.JTextField();
+        btnEdit1 = new javax.swing.JButton();
+        jLabel22 = new javax.swing.JLabel();
+        btnDelete1 = new javax.swing.JButton();
+        btnUpload = new javax.swing.JButton();
+        btnEdit2 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        btnDelete2 = new javax.swing.JButton();
+        btnEdit3 = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        btnDelete3 = new javax.swing.JButton();
+        btnEdit4 = new javax.swing.JButton();
+        cmbShippingPlace = new javax.swing.JComboBox<>();
+        btnDelete4 = new javax.swing.JButton();
+        cmbEstimatedDateOfShipment = new javax.swing.JComboBox<>();
+        cmbCategoryChild = new javax.swing.JComboBox<>();
+        cmbShippingMethod = new javax.swing.JComboBox<>();
+        cmbCategoryChild2 = new javax.swing.JComboBox<>();
+        cmbShippingChangeOfBuden = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        cmbPurchaseApplication = new javax.swing.JComboBox<>();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        tfBrand = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        cmbStateOfComodity = new javax.swing.JComboBox<>();
+        cmbSize = new javax.swing.JComboBox<>();
         cmbUserLst = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -97,50 +136,150 @@ public class AddNewItem extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        cmbShippingPlace = new javax.swing.JComboBox<>();
-        cmbEstimatedDateOfShipment = new javax.swing.JComboBox<>();
-        cmbShippingMethod = new javax.swing.JComboBox<>();
-        cmbShippingChangeOfBuden = new javax.swing.JComboBox<>();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        cmbStateOfComodity = new javax.swing.JComboBox<>();
-        cmbSize = new javax.swing.JComboBox<>();
-        cmbCategories = new javax.swing.JComboBox<>();
-        lbPicture1 = new javax.swing.JLabel();
-        lbPicture2 = new javax.swing.JLabel();
-        lbPicture3 = new javax.swing.JLabel();
-        lbPicture4 = new javax.swing.JLabel();
-        btnEdit1 = new javax.swing.JButton();
-        btnDelete1 = new javax.swing.JButton();
-        btnEdit2 = new javax.swing.JButton();
-        btnDelete2 = new javax.swing.JButton();
-        btnEdit3 = new javax.swing.JButton();
-        btnDelete3 = new javax.swing.JButton();
-        btnEdit4 = new javax.swing.JButton();
-        btnDelete4 = new javax.swing.JButton();
-        cmbCategoryChild = new javax.swing.JComboBox<>();
-        cmbCategoryChild2 = new javax.swing.JComboBox<>();
-        jLabel1 = new javax.swing.JLabel();
-        cmbPurchaseApplication = new javax.swing.JComboBox<>();
-        jLabel18 = new javax.swing.JLabel();
-        tfBrand = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
         jLabelName = new javax.swing.JLabel();
         tfProductName = new javax.swing.JTextField();
+        cmbCategories = new javax.swing.JComboBox<>();
         jLabel20 = new javax.swing.JLabel();
+        lbPicture1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         taProductDescription = new javax.swing.JTextArea();
-        jLabel21 = new javax.swing.JLabel();
-        tfProductPrize = new javax.swing.JTextField();
-        jLabel22 = new javax.swing.JLabel();
-        btnUpload = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jLabel14 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Add New Item");
+
+        lbPicture2.setText("Picture 2");
+        lbPicture2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbPicture2.setName("image2"); // NOI18N
+        lbPicture2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbPicture2picture2ClickedHandle(evt);
+            }
+        });
+
+        lbPicture3.setText("Picture 3");
+        lbPicture3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbPicture3.setName("image3"); // NOI18N
+        lbPicture3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbPicture3picture3ClickedHandle(evt);
+            }
+        });
+
+        jLabel21.setText("Product Prize (*)");
+
+        lbPicture4.setText("Picture 4");
+        lbPicture4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lbPicture4.setName("image4"); // NOI18N
+        lbPicture4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbPicture4picture4ClickedHandle(evt);
+            }
+        });
+
+        btnEdit1.setText("Edit");
+        btnEdit1.setActionCommand("image1");
+        btnEdit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit1btnEdit_Clicked(evt);
+            }
+        });
+
+        jLabel22.setText("円");
+
+        btnDelete1.setText("Delete");
+        btnDelete1.setActionCommand("image1");
+        btnDelete1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelete_Clicked(evt);
+            }
+        });
+
+        btnUpload.setText("Upload");
+        btnUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadActionPerformed(evt);
+            }
+        });
+
+        btnEdit2.setText("Edit");
+        btnEdit2.setActionCommand("image2");
+        btnEdit2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit2btnEdit_Clicked(evt);
+            }
+        });
+
+        jButton10.setText("Cancel");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10btnCancle_Clicked(evt);
+            }
+        });
+
+        btnDelete2.setText("Delete");
+        btnDelete2.setActionCommand("image2");
+        btnDelete2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelete2btnDelete_Clicked(evt);
+            }
+        });
+
+        btnEdit3.setText("Edit");
+        btnEdit3.setActionCommand("image3");
+        btnEdit3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit3btnEdit_Clicked(evt);
+            }
+        });
+
+        jLabel14.setText("Product Images");
+
+        btnDelete3.setText("Delete");
+        btnDelete3.setActionCommand("image3");
+
+        btnEdit4.setText("Edit");
+        btnEdit4.setActionCommand("image4");
+        btnEdit4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEdit4btnEdit_Clicked(evt);
+            }
+        });
+
+        btnDelete4.setText("Delete");
+        btnDelete4.setActionCommand("image4");
+
+        cmbCategoryChild.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCategoryChildcategoryChildSelected(evt);
+            }
+        });
+
+        cmbCategoryChild2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCategoryChild2categoryChild2Selected(evt);
+            }
+        });
+
+        jLabel1.setText("Purchase Application");
+
+        jLabel9.setText("State of Comodity (*)");
+
+        jLabel11.setText("Size (*)");
+
+        jLabel18.setText("Brand");
+
+        jLabel12.setText("Category (*)");
+
+        tfBrand.setText("指定なし");
+        tfBrand.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfBrandActionPerformed(evt);
+            }
+        });
+
+        jLabel13.setText("Product Details");
+
+        jLabel10.setText("Merchandise Information");
 
         cmbUserLst.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbUserLst.addActionListener(new java.awt.event.ActionListener() {
@@ -163,293 +302,162 @@ public class AddNewItem extends javax.swing.JFrame {
 
         jLabel8.setText("Shipping information");
 
-        jLabel9.setText("State of Comodity (*)");
-
-        jLabel11.setText("Size (*)");
-
-        jLabel12.setText("Category (*)");
-
-        jLabel13.setText("Product Details");
+        jLabelName.setText("Product Name (*)");
 
         cmbCategories.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                categorySelected(evt);
+                cmbCategorySelected(evt);
             }
         });
+
+        jLabel20.setText("Product Description (*)");
 
         lbPicture1.setText("Picture 1");
         lbPicture1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lbPicture1.setName("image1"); // NOI18N
         lbPicture1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                picture1ClickedHandle(evt);
+                lbPicture1picture1ClickedHandle(evt);
             }
         });
-
-        lbPicture2.setText("Picture 2");
-        lbPicture2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        lbPicture2.setName("image2"); // NOI18N
-        lbPicture2.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                picture2ClickedHandle(evt);
-            }
-        });
-
-        lbPicture3.setText("Picture 3");
-        lbPicture3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        lbPicture3.setName("image3"); // NOI18N
-        lbPicture3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                picture3ClickedHandle(evt);
-            }
-        });
-
-        lbPicture4.setText("Picture 4");
-        lbPicture4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        lbPicture4.setName("image4"); // NOI18N
-        lbPicture4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                picture4ClickedHandle(evt);
-            }
-        });
-
-        btnEdit1.setText("Edit");
-        btnEdit1.setActionCommand("image1");
-        btnEdit1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEdit_Clicked(evt);
-            }
-        });
-
-        btnDelete1.setText("Delete");
-        btnDelete1.setActionCommand("image1");
-        btnDelete1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDelete_Clicked(evt);
-            }
-        });
-
-        btnEdit2.setText("Edit");
-        btnEdit2.setActionCommand("image2");
-        btnEdit2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEdit_Clicked(evt);
-            }
-        });
-
-        btnDelete2.setText("Delete");
-        btnDelete2.setActionCommand("image2");
-        btnDelete2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDelete_Clicked(evt);
-            }
-        });
-
-        btnEdit3.setText("Edit");
-        btnEdit3.setActionCommand("image3");
-        btnEdit3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEdit_Clicked(evt);
-            }
-        });
-
-        btnDelete3.setText("Delete");
-        btnDelete3.setActionCommand("image3");
-
-        btnEdit4.setText("Edit");
-        btnEdit4.setActionCommand("image4");
-        btnEdit4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEdit_Clicked(evt);
-            }
-        });
-
-        btnDelete4.setText("Delete");
-        btnDelete4.setActionCommand("image4");
-
-        cmbCategoryChild.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                categoryChildSelected(evt);
-            }
-        });
-
-        cmbCategoryChild2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                categoryChild2Selected(evt);
-            }
-        });
-
-        jLabel1.setText("Purchase Application");
-
-        jLabel18.setText("Brand");
-
-        tfBrand.setText("指定なし");
-        tfBrand.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfBrandActionPerformed(evt);
-            }
-        });
-
-        jLabel10.setText("Merchandise Information");
-
-        jLabelName.setText("Product Name (*)");
-
-        jLabel20.setText("Product Description (*)");
 
         taProductDescription.setColumns(20);
         taProductDescription.setRows(5);
         jScrollPane1.setViewportView(taProductDescription);
 
-        jLabel21.setText("Product Prize (*)");
-
-        jLabel22.setText("円");
-
-        btnUpload.setText("Upload");
-        btnUpload.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUploadActionPerformed(evt);
-            }
-        });
-
-        jButton10.setText("Cancel");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancle_Clicked(evt);
-            }
-        });
-
-        jLabel14.setText("Product Images");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbUserLst, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(36, 36, 36)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel5)
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel18)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                 .addComponent(lbPicture1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                         .addComponent(jLabel12)
                                                         .addComponent(btnEdit1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                     .addGap(18, 18, 18)
                                                     .addComponent(btnDelete1)))
                                             .addGap(14, 14, 14)))))
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
                                     .addComponent(jLabel13))))
                         .addGap(40, 40, 40)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cmbShippingPlace, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmbEstimatedDateOfShipment, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmbShippingMethod, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmbShippingChangeOfBuden, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmbStateOfComodity, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(cmbSize, 0, 198, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(btnEdit2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(btnDelete2))
                                     .addComponent(lbPicture2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(cmbCategories, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(btnEdit3, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(btnDelete3))
                                     .addComponent(lbPicture3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(cmbCategoryChild, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(25, 25, 25)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(lbPicture4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(layout.createSequentialGroup()
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addComponent(btnEdit4, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGap(18, 18, 18)
                                                 .addComponent(btnDelete4)))
                                         .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                                         .addComponent(cmbCategoryChild2, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(tfBrand)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(38, 38, 38)
                                 .addComponent(jLabel1))
-                            .addComponent(jLabel8)
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jLabel10))
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(38, 38, 38)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel20)
                                     .addComponent(jLabelName)
                                     .addComponent(jLabel21))))
                         .addGap(75, 75, 75)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(tfProductPrize)
-                                    .addComponent(btnUpload, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tfProductPrize, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                                    .addComponent(btnUpload, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel22)
                                         .addGap(0, 0, Short.MAX_VALUE))))
                             .addComponent(jScrollPane1)
                             .addComponent(tfProductName)
-                            .addComponent(cmbPurchaseApplication, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(cmbPurchaseApplication, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbUserLst, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbUserLst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(2, 2, 2)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbPicture1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbPicture2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbPicture3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbPicture4, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit1)
                     .addComponent(btnDelete1)
                     .addComponent(btnEdit2)
@@ -461,83 +469,130 @@ public class AddNewItem extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(cmbCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbCategoryChild, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbCategoryChild2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmbSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmbStateOfComodity, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(cmbShippingChangeOfBuden, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(cmbShippingMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(cmbEstimatedDateOfShipment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cmbShippingPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(cmbPurchaseApplication, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelName)
                     .addComponent(tfProductName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel20)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfProductPrize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel21)
                     .addComponent(jLabel22))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnUpload)
                     .addComponent(jButton10))
                 .addContainerGap())
         );
 
+        jScrollPane2.setViewportView(jPanel1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
+        );
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCancle_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancle_Clicked
-        //close
-        this.dispose();
-    }//GEN-LAST:event_btnCancle_Clicked
+    private void lbPicture2picture2ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbPicture2picture2ClickedHandle
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            imgPaths[1] = fileChooser.getSelectedFile().getName();
+            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
+            lbPicture2.setIcon(imageIcon);
+        }
+    }//GEN-LAST:event_lbPicture2picture2ClickedHandle
 
-    private void btnEdit_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit_Clicked
+    private void lbPicture3picture3ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbPicture3picture3ClickedHandle
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            imgPaths[2] = fileChooser.getSelectedFile().getName();
+            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
+            lbPicture3.setIcon(imageIcon);
+        }
+    }//GEN-LAST:event_lbPicture3picture3ClickedHandle
+
+    private void lbPicture4picture4ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbPicture4picture4ClickedHandle
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            imgPaths[3] = fileChooser.getSelectedFile().getName();
+            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
+            lbPicture4.setIcon(imageIcon);
+        }
+    }//GEN-LAST:event_lbPicture4picture4ClickedHandle
+
+    private void btnEdit1btnEdit_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit1btnEdit_Clicked
         // TODO add your handling code here:
         JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter fileFilter
-                = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
         fileChooser.setFileFilter(fileFilter);
         if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
             for (int i = 0; i < 4; i++) {
@@ -549,83 +604,7 @@ public class AddNewItem extends javax.swing.JFrame {
                 }
             }
         }
-    }//GEN-LAST:event_btnEdit_Clicked
-
-    private void categoryChildSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryChildSelected
-        if (lstCategory != null) {
-            int selectedIndex = cmbCategories.getSelectedIndex();
-            int childSelectedIndex = cmbCategoryChild.getSelectedIndex();
-            if (selectedIndex >= 0 && childSelectedIndex >= 0) {
-                cmbCategoryChild2.removeAllItems();
-                lstCmbItemChild2 = new ArrayList<>();
-                for (Child2 categoryChild2 : lstCategory.get(selectedIndex).children.get(childSelectedIndex).children) {
-                    lstCmbItemChild2.add(new CmbItem(categoryChild2.name, "" + categoryChild2.id));
-                }
-                for (CmbItem item : lstCmbItemChild2) {
-                    cmbCategoryChild2.addItem(item.getText());
-                }
-            }
-        }
-    }//GEN-LAST:event_categoryChildSelected
-
-    private void cmbUserLstSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbUserLstSelected
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbUserLstSelected
-
-    private void picture1ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture1ClickedHandle
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter
-                = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
-        fileChooser.setFileFilter(fileFilter);
-        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
-            imgPaths[0] = fileChooser.getSelectedFile().getName();
-            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
-            lbPicture1.setIcon(imageIcon);
-        }
-    }//GEN-LAST:event_picture1ClickedHandle
-
-    private void picture4ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture4ClickedHandle
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter
-                = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
-        fileChooser.setFileFilter(fileFilter);
-        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
-            imgPaths[3] = fileChooser.getSelectedFile().getName();
-            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
-            lbPicture4.setIcon(imageIcon);
-        }
-    }//GEN-LAST:event_picture4ClickedHandle
-
-    private void picture2ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture2ClickedHandle
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter
-                = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
-        fileChooser.setFileFilter(fileFilter);
-        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
-            imgPaths[1] = fileChooser.getSelectedFile().getName();
-            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
-            lbPicture2.setIcon(imageIcon);
-        }
-    }//GEN-LAST:event_picture2ClickedHandle
-
-    private void categorySelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categorySelected
-        if (lstCategory != null) {
-            int selectedIndex = cmbCategories.getSelectedIndex();
-            if (selectedIndex >= 0) {
-                cmbCategoryChild.removeAllItems();
-                List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
-                for (Child categoryChild : lstCategory.get(selectedIndex).children) {
-                    lstCmbItem.add(new CmbItem(categoryChild.name, "" + categoryChild.id));
-                }
-                for (CmbItem item : lstCmbItem) {
-                    cmbCategoryChild.addItem(item.getText());
-                }
-            }
-        }
-    }//GEN-LAST:event_categorySelected
+    }//GEN-LAST:event_btnEdit1btnEdit_Clicked
 
     private void btnDelete_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete_Clicked
         JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
@@ -642,7 +621,109 @@ public class AddNewItem extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDelete_Clicked
 
-    private void categoryChild2Selected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryChild2Selected
+    private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
+        try {
+            uploadItem();
+        } catch (IOException ex) {
+            Logger.getLogger(AddNewItem.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnUploadActionPerformed
+
+    private void btnEdit2btnEdit_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit2btnEdit_Clicked
+        // TODO add your handling code here:
+        JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            for (int i = 0; i < 4; i++) {
+                if (evt.getActionCommand().equals(label[i].getName())) {
+                    imgPaths[i] = fileChooser.getSelectedFile().getName();
+                    ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
+                    //label[i].setIcon(null);
+                    label[i].setIcon(imageIcon);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnEdit2btnEdit_Clicked
+
+    private void jButton10btnCancle_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10btnCancle_Clicked
+        //close
+        this.dispose();
+    }//GEN-LAST:event_jButton10btnCancle_Clicked
+
+    private void btnDelete2btnDelete_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete2btnDelete_Clicked
+        JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+        for (int i = 0; i < 4; i++) {
+            if (evt.getActionCommand().equals(label[i].getName())) {
+                String strImageID = getImageID(imgLinks[i]);
+                if (strImageID != null) {
+                    lstIDImg2Delete.add(strImageID);
+                    label[i].setIcon(null);
+                    imgLinks[i] = null;
+                    imgPaths[i] = null;
+                }
+            }
+        }
+    }//GEN-LAST:event_btnDelete2btnDelete_Clicked
+
+    private void btnEdit3btnEdit_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit3btnEdit_Clicked
+        // TODO add your handling code here:
+        JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            for (int i = 0; i < 4; i++) {
+                if (evt.getActionCommand().equals(label[i].getName())) {
+                    imgPaths[i] = fileChooser.getSelectedFile().getName();
+                    ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
+                    //label[i].setIcon(null);
+                    label[i].setIcon(imageIcon);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnEdit3btnEdit_Clicked
+
+    private void btnEdit4btnEdit_Clicked(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit4btnEdit_Clicked
+        // TODO add your handling code here:
+        JLabel[] label = new JLabel[]{lbPicture1, lbPicture2, lbPicture3, lbPicture4};
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            for (int i = 0; i < 4; i++) {
+                if (evt.getActionCommand().equals(label[i].getName())) {
+                    imgPaths[i] = fileChooser.getSelectedFile().getName();
+                    ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
+                    //label[i].setIcon(null);
+                    label[i].setIcon(imageIcon);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnEdit4btnEdit_Clicked
+
+    private void cmbCategoryChildcategoryChildSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCategoryChildcategoryChildSelected
+        if (lstCategory != null) {
+            int selectedIndex = cmbCategories.getSelectedIndex();
+            int childSelectedIndex = cmbCategoryChild.getSelectedIndex();
+            if (selectedIndex >= 0 && childSelectedIndex >= 0) {
+                cmbCategoryChild2.removeAllItems();
+                lstCmbItemChild2 = new ArrayList<>();
+                for (Child2 categoryChild2 : lstCategory.get(selectedIndex).children.get(childSelectedIndex).children) {
+                    lstCmbItemChild2.add(new CmbItem(categoryChild2.name, "" + categoryChild2.id));
+                }
+                for (CmbItem item : lstCmbItemChild2) {
+                    cmbCategoryChild2.addItem(item.getText());
+                }
+            }
+        }
+    }//GEN-LAST:event_cmbCategoryChildcategoryChildSelected
+
+    private void cmbCategoryChild2categoryChild2Selected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCategoryChild2categoryChild2Selected
         if (lstCategory != null) {
             int selectedIndex = cmbCategories.getSelectedIndex();
             int childSelectedIndex = cmbCategoryChild.getSelectedIndex();
@@ -667,32 +748,44 @@ public class AddNewItem extends javax.swing.JFrame {
                 }
             }
         }
-    }//GEN-LAST:event_categoryChild2Selected
-
-    private void picture3ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_picture3ClickedHandle
-        // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter fileFilter
-                = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
-        fileChooser.setFileFilter(fileFilter);
-        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
-            imgPaths[2] = fileChooser.getSelectedFile().getName();
-            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
-            lbPicture3.setIcon(imageIcon);
-        }
-    }//GEN-LAST:event_picture3ClickedHandle
+    }//GEN-LAST:event_cmbCategoryChild2categoryChild2Selected
 
     private void tfBrandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfBrandActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfBrandActionPerformed
 
-    private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
-        try {
-            uploadItem();
-        } catch (IOException ex) {
-            Logger.getLogger(AddNewItem.class.getName()).log(Level.SEVERE, null, ex);
+    private void cmbUserLstSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbUserLstSelected
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbUserLstSelected
+
+    private void cmbCategorySelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCategorySelected
+        if (lstCategory != null) {
+            int selectedIndex = cmbCategories.getSelectedIndex();
+            if (selectedIndex >= 0) {
+                cmbCategoryChild.removeAllItems();
+                List<CmbItem> lstCmbItem = new ArrayList<CmbItem>();
+                for (Child categoryChild : lstCategory.get(selectedIndex).children) {
+                    lstCmbItem.add(new CmbItem(categoryChild.name, "" + categoryChild.id));
+                }
+                for (CmbItem item : lstCmbItem) {
+                    cmbCategoryChild.addItem(item.getText());
+                }
+            }
         }
-    }//GEN-LAST:event_btnUploadActionPerformed
+    }//GEN-LAST:event_cmbCategorySelected
+
+    private void lbPicture1picture1ClickedHandle(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbPicture1picture1ClickedHandle
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter fileFilter
+        = new FileNameExtensionFilter("Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png)", "jpg", "jpeg", "jpe", "jfif", "png");
+        fileChooser.setFileFilter(fileFilter);
+        if (fileChooser.showOpenDialog(AddNewItem.this) == JFileChooser.APPROVE_OPTION) {
+            imgPaths[0] = fileChooser.getSelectedFile().getName();
+            ImageIcon imageIcon = new ImageIcon(((new ImageIcon(fileChooser.getSelectedFile().getPath())).getImage().getScaledInstance(150, 130, Image.SCALE_DEFAULT)));
+            lbPicture1.setIcon(imageIcon);
+        }
+    }//GEN-LAST:event_lbPicture1picture1ClickedHandle
 
     /**
      * @param args the command line arguments
@@ -739,7 +832,9 @@ public class AddNewItem extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelName;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lbPicture1;
     private javax.swing.JLabel lbPicture2;
     private javax.swing.JLabel lbPicture3;
